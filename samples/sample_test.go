@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"reflect"
-	"strings"
 	"testing"
 
-	"github.com/beerproto/tools/beerproto"
-	"github.com/beerproto/tools/encoding"
+	mapping "github.com/beerproto/tools/mapping/beerJSON"
 )
 
 func TestSchemas_Generate(t *testing.T) {
@@ -103,27 +101,17 @@ func TestSchemas_Generate(t *testing.T) {
 				t.Error(err)
 			}
 
-			beerJSON := &beerproto.Recipe{
+			beerJSON, _ := mapping.MapToProto(file)
 
-			}
-
-			reader := strings.NewReader(string(file))
-
-			encoding.JSON(reader, beerJSON)
-
-			// data, err := json.Marshal(&struct {
-			// 	Beer *beerproto.Beerjson `json:"beerjson"`
-			// }{
-			// 	Beer: beer,
-			// })
+			data, err := json.Marshal(beerJSON)
 			if err != nil {
 				t.Error(err)
 			}
 
-			// err = ShouldEqualJSONObject(file, data)
-			// if err != nil {
-			// 	t.Error(err)
-			// }
+			err = ShouldEqualJSONObject(file, data)
+			if err != nil {
+				t.Error(err)
+			}
 		})
 	}
 }

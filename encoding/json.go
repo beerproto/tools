@@ -6,7 +6,7 @@ import (
 	"io"
 
 	"github.com/beerproto/tools/beerproto"
-	"github.com/beerproto/tools/mapping"
+	mapping "github.com/beerproto/tools/mapping/beerJSON"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -18,7 +18,7 @@ func JSON(r io.Reader, beer *beerproto.Recipe) error {
 		return fmt.Errorf("json: %w", err)
 	}
 
-	m = mapping.Enum(m)
+	m = mapping.MapToProto(m)
 
 	data, err := json.Marshal(&m)
 	err = protojson.Unmarshal(data, beer)
