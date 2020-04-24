@@ -28,6 +28,9 @@ func Mapping(data []byte) (*beerproto.Recipe, error) {
 		Recipes:[]*beerproto.RecipeType{},
 		MiscellaneousIngredients:[]*beerproto.MiscellaneousType{},
 		Styles: []*beerproto.StyleType{},
+		Fermentations: []*beerproto.FermentationProcedureType{},
+		Boil: []*beerproto.BoilProcedureType{},
+		Fermentables: []*beerproto.FermentableType{},
 	}
 
 	output.Version = float64(input.Version)
@@ -44,8 +47,30 @@ func Mapping(data []byte) (*beerproto.Recipe, error) {
 	for _, style := range input.Styles {
 		output.Styles = append(output.Styles, ToProtoStyleType(style))
 	}
+	for _, fermentation := range input.Fermentations {
+		output.Fermentations = append(output.Fermentations, ToProtoFermentationProcedureType(&fermentation))
+	}
+	for _, boil := range input.Boil {
+		output.Boil = append(output.Boil, ToProtoBoilProcedureType(&boil))
+	}
+
+	for _, fermentables := range input.Fermentables {
+		output.Fermentables = append(output.Fermentables, ToProtoFermentableType(&fermentables))
+	}
 	return output, nil
 }
+
+func ToProtoFermentableType(i *beerjson.FermentableType) *beerproto.FermentableType{
+	return &beerproto.FermentableType{
+		MaxInBatch: ToProtoPercentType(i.MaxInBatch),
+		RecommendMash: *i.RecommendMash,
+		Protein: ToProtoPercentType(i.Protein),
+		ProductId: *i.ProductId,
+		GrainGroup: ToProtoFermentableBaseGrainGroup(i.FermentableBaseGrainGroup),
+	}
+}
+
+func ToProtoFermentableBaseGrainGroup(i *beerproto.FermentableBaseGrainGroup)
 
 func ToProtoStyleType(i beerjson.StyleType) *beerproto.StyleType{
 	return &beerproto.StyleType{
