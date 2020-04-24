@@ -20,13 +20,14 @@ func Mapping(data []byte) (*beerproto.Recipe, error) {
 
 	err := json.Unmarshal(data, &str)
 	if err != nil {
-		return nil, fmt.Errorf("beerJSON: bad json %w", err)
+		return nil, fmt.Errorf("beerJSON: bad json format %w", err)
 	}
 
 	output := &beerproto.Recipe{
 		Mashes: []*beerproto.MashProcedureType{},
 		Recipes:[]*beerproto.RecipeType{},
 		MiscellaneousIngredients:[]*beerproto.MiscellaneousType{},
+		Styles: []*beerproto.StyleType{},
 	}
 
 	output.Version = float64(input.Version)
@@ -40,7 +41,110 @@ func Mapping(data []byte) (*beerproto.Recipe, error) {
 	for _, ingredients := range input.MiscellaneousIngredients {
 		output.MiscellaneousIngredients = append(output.MiscellaneousIngredients, ToProtoMiscellaneousType(ingredients))
 	}
+	for _, style := range input.Styles {
+		output.Styles = append(output.Styles, ToProtoStyleType(style))
+	}
 	return output, nil
+}
+
+func ToProtoStyleType(i beerjson.StyleType) *beerproto.StyleType{
+	return &beerproto.StyleType{
+		Aroma: *i.Aroma,
+		Ingredients: *i.Ingredients,
+		CategoryNumber: *i.CategoryNumber,
+		Notes: *i.Notes,
+		Flavor: *i.Flavor,
+		Mouthfeel: *i.Mouthfeel,
+		FinalGravity: ToProtoGravityRangeType(i.FinalGravity),
+		StyleGuide: *i.StyleGuide,
+		Color: ToProtoColorRangeType(i.Color),
+		OriginalGravity: ToProtoGravityRangeType(i.OriginalGravity),
+		Examples: *i.Examples,
+		Name: *i.Name,
+		Carbonation: ToProtoCarbonationRangeType(i.Carbonation),
+		AlcoholByVolume: ToProtoPercentRangeType(i.AlcoholByVolume),
+		InternationalBitternessUnits: ToProtoBitternessRangeType(i.InternationalBitternessUnits),
+		Appearance: *i.Appearance,
+		Category: *i.Category,
+		StyleLetter: *i.StyleLetter,
+		Type: ToProtoStyleType_StyleCategories(i.KeyType),
+		OverallImpression: *i.OverallImpression,
+	}
+}
+
+func ToProtoStyleType_StyleCategories(i *beerjson.StyleCategories) beerproto.StyleType_StyleCategories{
+	if i == nil {
+		return beerproto.StyleType_NULL
+	}
+	unit := beerproto.StyleType_StyleCategories_value[strings.ToUpper(string(*i))]
+	return beerproto.StyleType_StyleCategories(unit)
+}
+
+func ToProtoBitternessRangeType(i *beerjson.BitternessRangeType) *beerproto.BitternessRangeType{
+	return &beerproto.BitternessRangeType{
+		Minimum: ToProtoBitternessType(&i.Minimum),
+		Maximum: ToProtoBitternessType(&i.Maximum),
+	}
+}
+
+func ToProtoBitternessType(i *beerjson.BitternessType) *beerproto.BitternessType{
+	return &beerproto.BitternessType{
+		Value: i.Value,
+		Unit: ToProtoBitternessUnitType(&i.Unit),
+	}
+}
+
+func ToProtoBitternessUnitType(i *beerjson.BitternessUnitType) beerproto.BitternessType_BitternessUnitType{
+	if i == nil {
+		return beerproto.BitternessType_NULL
+	}
+	unit := beerproto.BitternessType_BitternessUnitType_value[strings.ToUpper(string(*i))]
+	return beerproto.BitternessType_BitternessUnitType(unit)
+}
+
+func ToProtoPercentRangeType(i *beerjson.PercentRangeType) *beerproto.PercentRangeType{
+	return &beerproto.PercentRangeType{
+		Minimum: ToProtoPercentType(&i.Minimum),
+		Maximum: ToProtoPercentType(&i.Maximum),
+	}
+}
+
+func ToProtoCarbonationRangeType(i *beerjson.CarbonationRangeType) *beerproto.CarbonationRangeType{
+	return &beerproto.CarbonationRangeType{
+		Minimum: ToProtoCarbonationType(&i.Minimum),
+		Maximum: ToProtoCarbonationType(&i.Maximum),
+	}
+}
+func ToProtoCarbonationType(i *beerjson.CarbonationType) *beerproto.CarbonationType{
+	return &beerproto.CarbonationType{
+		Value: i.Value,
+		Unit: ToProtoCarbonationUnitType(&i.Unit),
+	}
+}
+
+func ToProtoCarbonationUnitType(i *beerjson.CarbonationUnitType) beerproto.CarbonationType_CarbonationUnitType{
+	if i == nil {
+		return beerproto.CarbonationType_NULL
+	}
+	unit := beerproto.CarbonationType_CarbonationUnitType_value[strings.ToUpper(string(*i))]
+	return beerproto.CarbonationType_CarbonationUnitType(unit)
+}
+
+func ToProtoColorRangeType(i *beerjson.ColorRangeType) *beerproto.ColorRangeType{
+	return &beerproto.ColorRangeType{
+		Minimum: ToProtoColorType(&i.Minimum),
+		Maximum: ToProtoColorType(&i.Maximum),
+	}
+}
+
+func ToProtoGravityRangeType(i *beerjson.GravityRangeType) *beerproto.GravityRangeType{
+	if i == nil {
+		return nil
+	}
+	return &beerproto.GravityRangeType{
+		Minimum: ToProtoGravityType(&i.Minimum),
+		Maximum: ToProtoGravityType(&i.Maximum),
+	}
 }
 
 func ToProtoMiscellaneousType(i beerjson.MiscellaneousType) *beerproto.MiscellaneousType{
@@ -601,7 +705,7 @@ func ToProtoRecipeStyleType(i *beerjson.RecipeStyleType) *beerproto.RecipeStyleT
 		return nil
 	}
 	return &beerproto.RecipeStyleType{
-		Type: ToProtoStyleCategories(i.KeyType),
+		Type: ToProtoRecipeStyleType_StyleCategories(i.KeyType),
 		Name: *i.Name,
 		Category: *i.Category,
 		CategoryNumber: *i.CategoryNumber,
@@ -610,7 +714,7 @@ func ToProtoRecipeStyleType(i *beerjson.RecipeStyleType) *beerproto.RecipeStyleT
 	}
 }
 
-func ToProtoStyleCategories(i *beerjson.StyleCategories) beerproto.RecipeStyleType_StyleCategories {
+func ToProtoRecipeStyleType_StyleCategories(i *beerjson.StyleCategories) beerproto.RecipeStyleType_StyleCategories {
 	if i == nil {
 		return beerproto.RecipeStyleType_NULL
 	}
