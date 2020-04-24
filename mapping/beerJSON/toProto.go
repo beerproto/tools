@@ -11,11 +11,11 @@ import (
 
 func Mapping(data []byte) (*beerproto.Recipe, error) {
 
-	input := &beerjson.Beerjson{}
+	i := &beerjson.Beerjson{}
 	str := &struct {
 		Beer *beerjson.Beerjson `json:"beerjson"`
 	}{
-		Beer: input,
+		Beer: i,
 	}
 
 	err := json.Unmarshal(data, &str)
@@ -30,38 +30,214 @@ func Mapping(data []byte) (*beerproto.Recipe, error) {
 		Styles: []*beerproto.StyleType{},
 		Fermentations: []*beerproto.FermentationProcedureType{},
 		Boil: []*beerproto.BoilProcedureType{},
-		Version : float64(input.Version),
+		Version : float64(i.Version),
 		Fermentables: []*beerproto.FermentableType{},
-		TimingObject: ToProtoTimingType(input.TimingObject),
+		TimingObject: ToProtoTimingType(i.TimingObject),
 		Cultures: []*beerproto.CultureInformation{},
+		Equipments: []*beerproto.EquipmentType{},
+		Packaging: []*beerproto.PackagingProcedureType{},
+		HopVarieties: []*beerproto.VarietyInformation{},
+		Profiles: []*beerproto.WaterBase{},
 	}
 
 
-	for _, mash := range input.Mashes {
+	for _, mash := range i.Mashes {
 		output.Mashes = append(output.Mashes, ToProtoMashProcedureType(&mash))
 	}
-	for _, recipe := range input.Recipes {
-		output.Recipes = append(output.Recipes, ToProtoRecipeType(recipe))
+	for _, recipe := range i.Recipes {
+		output.Recipes = append(output.Recipes, ToProtoRecipeType(&recipe))
 	}
-	for _, ingredients := range input.MiscellaneousIngredients {
-		output.MiscellaneousIngredients = append(output.MiscellaneousIngredients, ToProtoMiscellaneousType(ingredients))
+	for _, ingredients := range i.MiscellaneousIngredients {
+		output.MiscellaneousIngredients = append(output.MiscellaneousIngredients, ToProtoMiscellaneousType(&ingredients))
 	}
-	for _, style := range input.Styles {
-		output.Styles = append(output.Styles, ToProtoStyleType(style))
+	for _, style := range i.Styles {
+		output.Styles = append(output.Styles, ToProtoStyleType(&style))
 	}
-	for _, fermentation := range input.Fermentations {
+	for _, fermentation := range i.Fermentations {
 		output.Fermentations = append(output.Fermentations, ToProtoFermentationProcedureType(&fermentation))
 	}
-	for _, boil := range input.Boil {
+	for _, boil := range i.Boil {
 		output.Boil = append(output.Boil, ToProtoBoilProcedureType(&boil))
 	}
-	for _, fermentable := range input.Fermentables {
+	for _, fermentable := range i.Fermentables {
 		output.Fermentables = append(output.Fermentables, ToProtoFermentableType(&fermentable))
 	}
-	for _, culture := range input.Cultures {
+	for _, culture := range i.Cultures {
 		output.Cultures = append(output.Cultures, ToProtoCultureInformation(&culture))
 	}
+	for _, equipment := range i.Equipments {
+		output.Equipments = append(output.Equipments, ToProtoEquipmentType(&equipment))
+	}
+	for _, packaging := range i.Packaging {
+		output.Packaging = append(output.Packaging, ToProtoPackagingProcedureType(&packaging))
+	}
+	for _, hopVariety := range i.HopVarieties {
+		output.HopVarieties = append(output.HopVarieties, ToProtoVarietyInformation(&hopVariety))
+	}
+	for _, profile := range i.Profiles {
+		output.Profiles = append(output.Profiles, ToProtoWaterBase(&profile))
+	}
 	return output, nil
+}
+
+func ToProtoWaterBase(i *beerjson.WaterBase) *beerproto.WaterBase{
+	if i == nil {
+		return nil
+	}
+
+	return &beerproto.WaterBase{
+		Calcium: ToProtoConcentrationType(&i.Calcium),
+		Nitrite: ToProtoConcentrationType(i.Nitrite),
+		Chloride: ToProtoConcentrationType(&i.Chloride),
+		Name: i.Name,
+		Potassium: ToProtoConcentrationType(i.Potassium),
+		Carbonate: ToProtoConcentrationType(i.Carbonate),
+		Iron: ToProtoConcentrationType(i.Iron),
+		Flouride: ToProtoConcentrationType(i.Flouride),
+		Sulfate: ToProtoConcentrationType(&i.Sulfate),
+		Magnesium: ToProtoConcentrationType(&i.Magnesium),
+		Producer: *i.Producer,
+		Bicarbonate: ToProtoConcentrationType(&i.Bicarbonate),
+		Nitrate: ToProtoConcentrationType(i.Nitrate),
+		Sodium: ToProtoConcentrationType(&i.Sodium),
+	}
+}
+
+func ToProtoVarietyInformation(i *beerjson.VarietyInformation) *beerproto.VarietyInformation{
+	return &beerproto.VarietyInformation{
+		Inventory: ToProtoHopInventoryType(i.Inventory),
+		Type: ToProtoVarietyInformationType(i.VarietyInformationType),
+		OilContent:ToProtoOilContentType(i.OilContent),
+		PercentLost: ToProtoPercentType(i.PercentLost),
+		ProductId: *i.ProductId,
+		AlphaAcid: ToProtoPercentType(i.AlphaAcid),
+		BetaAcid: ToProtoPercentType(i.BetaAcid),
+		Name: *i.Name,
+		Origin: *i.Origin,
+		Substitutes: *i.Substitutes,
+		Year: *i.Year,
+		Form: ToProtoHopVarietyBaseForm(i.HopVarietyBaseForm),
+		Producer: *i.Producer,
+		Notes: *i.Notes,
+	}
+}
+
+func ToProtoOilContentType(i *beerjson.OilContentType) *beerproto.OilContentType{
+	if i == nil {
+		return nil
+	}
+
+	return &beerproto.OilContentType{
+		Polyphenols: ToProtoPercentType(i.Polyphenols),
+		TotalOilMlPer_100G: *i.TotalOilMlPer100g,
+		Farnesene: ToProtoPercentType(i.Farnesene),
+		Limonene: ToProtoPercentType(i.Limonene),
+		Nerol: ToProtoPercentType(i.Nerol),
+		Geraniol: ToProtoPercentType(i.Geraniol),
+		BPinene: ToProtoPercentType(i.BPinene),
+		Linalool: ToProtoPercentType(i.Linalool),
+		Caryophyllene: ToProtoPercentType(i.Caryophyllene),
+		Cohumulone: ToProtoPercentType(i.Cohumulone),
+		Xanthohumol: ToProtoPercentType(i.Xanthohumol),
+		Humulene: ToProtoPercentType(i.Humulene),
+		Myrcene: ToProtoPercentType(i.Myrcene),
+		Pinene: ToProtoPercentType(i.Pinene),
+	}
+}
+
+func ToProtoVarietyInformationType(i *beerjson.VarietyInformationType) beerproto.VarietyInformation_VarietyInformationType {
+	if i == nil {
+		return beerproto.VarietyInformation_NULL_VarietyInformationType
+	}
+
+	unit := beerproto.VarietyInformation_VarietyInformationType_value[strings.ToUpper(string(*i))]
+	return beerproto.VarietyInformation_VarietyInformationType(unit)
+}
+
+func ToProtoHopInventoryType(i *beerjson.HopInventoryType) *beerproto.HopInventoryType{
+	if i == nil {
+		return nil
+	}
+
+	hopInventoryType :=  &beerproto.HopInventoryType{ }
+
+	if mass, ok :=i.Amount.(*beerjson.MassType); ok {
+		hopInventoryType.Amount = &beerproto.HopInventoryType_Mass{
+			Mass: ToProtoMassType(mass),
+		}
+	}
+
+	if volume, ok :=i.Amount.(*beerjson.VolumeType); ok {
+		hopInventoryType.Amount = &beerproto.HopInventoryType_Volume{
+			Volume: ToProtoVolumeType(volume),
+		}
+	}
+
+	return hopInventoryType
+}
+
+func ToProtoEquipmentType(i *beerjson.EquipmentType) *beerproto.EquipmentType{
+	if i == nil {
+		return nil
+	}
+
+	equipmentItemType := []*beerproto.EquipmentItemType{}
+	for _, item := range i.EquipmentItems {
+		equipmentItemType = append(equipmentItemType, ToProtoEquipmentItemType(&item))
+	}
+
+	return &beerproto.EquipmentType{
+		Name: i.Name,
+		EquipmentItems: equipmentItemType,
+	}
+}
+
+func ToProtoEquipmentItemType(i *beerjson.EquipmentItemType) *beerproto.EquipmentItemType{
+	if i == nil {
+		return nil
+	}
+
+	return &beerproto.EquipmentItemType{
+		BoilRatePerHour: ToProtoVolumeType(i.BoilRatePerHour),
+		Type: *i.KeyType,
+		Form: ToProtoEquipmentBaseForm(i.EquipmentBaseForm),
+		DrainRatePerMinute: ToProtoVolumeType(i.DrainRatePerMinute),
+		SpecificHeat: ToProtoSpecificHeatType(i.SpecificHeat),
+		GrainAbsorptionRate: ToProtoSpecificVolumeType(i.GrainAbsorptionRate),
+		Name: *i.Name,
+		MaximumVolume: ToProtoVolumeType(i.MaximumVolume),
+		Weight: ToProtoMassType(i.Weight),
+		Loss: ToProtoVolumeType(&i.Loss),
+	}
+}
+
+func ToProtoSpecificHeatType(i *beerjson.SpecificHeatType) *beerproto.SpecificHeatType{
+	if i == nil {
+		return nil
+	}
+
+	return &beerproto.SpecificHeatType{
+		Value: i.Value,
+		Unit: ToProtoSpecificHeatUnitType(&i.Unit),
+	}
+}
+
+func ToProtoSpecificHeatUnitType(i *beerjson.SpecificHeatUnitType) beerproto.SpecificHeatType_SpecificHeatUnitType{
+	if i == nil {
+		return beerproto.SpecificHeatType_NULL
+	}
+
+	unit := beerproto.SpecificHeatType_SpecificHeatUnitType_value[strings.ToUpper(string(*i))]
+	return beerproto.SpecificHeatType_SpecificHeatUnitType(unit)
+}
+
+func ToProtoEquipmentBaseForm(i *beerjson.EquipmentBaseForm) beerproto.EquipmentItemType_EquipmentBaseForm{
+	if i == nil {
+		return beerproto.EquipmentItemType_NULL
+	}
+
+	unit := beerproto.EquipmentItemType_EquipmentBaseForm_value[strings.ToUpper(string(*i))]
+	return beerproto.EquipmentItemType_EquipmentBaseForm(unit)
 }
 
 func ToProtoCultureInformation(i *beerjson.CultureInformation) *beerproto.CultureInformation{
@@ -209,11 +385,16 @@ func ToProtoDiastaticPowerUnitType(i *beerjson.DiastaticPowerUnitType) beerproto
 	if i == nil {
 		return beerproto.DiastaticPowerType_NULL
 	}
+
 	unit := beerproto.DiastaticPowerType_DiastaticPowerUnitType_value[strings.ToUpper(string(*i))]
 	return beerproto.DiastaticPowerType_DiastaticPowerUnitType(unit)
 }
 
-func ToProtoStyleType(i beerjson.StyleType) *beerproto.StyleType{
+func ToProtoStyleType(i *beerjson.StyleType) *beerproto.StyleType{
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.StyleType{
 		Aroma: *i.Aroma,
 		Ingredients: *i.Ingredients,
@@ -325,13 +506,18 @@ func ToProtoGravityRangeType(i *beerjson.GravityRangeType) *beerproto.GravityRan
 	if i == nil {
 		return nil
 	}
+
 	return &beerproto.GravityRangeType{
 		Minimum: ToProtoGravityType(&i.Minimum),
 		Maximum: ToProtoGravityType(&i.Maximum),
 	}
 }
 
-func ToProtoMiscellaneousType(i beerjson.MiscellaneousType) *beerproto.MiscellaneousType{
+func ToProtoMiscellaneousType(i *beerjson.MiscellaneousType) *beerproto.MiscellaneousType{
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.MiscellaneousType{
 		UseFor: *i.UseFor,
 		Notes: *i.Notes,
@@ -342,8 +528,6 @@ func ToProtoMiscellaneousType(i beerjson.MiscellaneousType) *beerproto.Miscellan
 		Inventory: ToProtoMiscellaneousInventoryType(i.Inventory),
 	}
 }
-
-
 
 func ToProtoMiscellaneousInventoryType(i *beerjson.MiscellaneousInventoryType) *beerproto.MiscellaneousInventoryType{
 	if i == nil {
@@ -373,7 +557,11 @@ func ToProtoMiscellaneousInventoryType(i *beerjson.MiscellaneousInventoryType) *
 }
 
 
-func ToProtoRecipeType(i beerjson.RecipeType) *beerproto.RecipeType{
+func ToProtoRecipeType(i *beerjson.RecipeType) *beerproto.RecipeType{
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.RecipeType{
 		Efficiency: ToProtoEfficiencyType(i.Efficiency),
 		Style: ToProtoRecipeStyleType(i.Style),
@@ -388,7 +576,7 @@ func ToProtoRecipeType(i beerjson.RecipeType) *beerproto.RecipeType{
 		Carbonation: *i.Carbonation,
 		Fermentation: ToProtoFermentationProcedureType(i.Fermentation),
 		Author: i.Author,
-		Ingredients: ToProtoIngredientsType(i.Ingredients),
+		Ingredients: ToProtoIngredientsType(&i.Ingredients),
 		Mash: ToProtoMashProcedureType(i.Mash),
 		Packaging: ToProtoPackagingProcedureType(i.Packaging),
 		Boil: ToProtoBoilProcedureType(i.Boil),
@@ -419,7 +607,7 @@ func ToProtoBoilProcedureType(i *beerjson.BoilProcedureType) *beerproto.BoilProc
 	boilSteps := make([]*beerproto.BoilStepType, 0)
 
 	for _, step := range i.BoilSteps {
-		boilSteps = append(boilSteps, ToProtoBoilStepType(step))
+		boilSteps = append(boilSteps, ToProtoBoilStepType(&step))
 	}
 
 	return &beerproto.BoilProcedureType{
@@ -432,7 +620,11 @@ func ToProtoBoilProcedureType(i *beerjson.BoilProcedureType) *beerproto.BoilProc
 	}
 }
 
-func ToProtoBoilStepType(i beerjson.BoilStepType) *beerproto.BoilStepType{
+func ToProtoBoilStepType(i *beerjson.BoilStepType) *beerproto.BoilStepType{
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.BoilStepType{
 		EndGravity: ToProtoGravityType(i.EndGravity),
 		ChillingType:ToProtoChillingType(i.BoilStepTypeChillingType),
@@ -463,7 +655,7 @@ func ToProtoPackagingProcedureType(i *beerjson.PackagingProcedureType) *beerprot
 	packagingVessels := make([]*beerproto.PackagingVesselType, 0)
 
 	for _, vessels := range i.PackagingVessels {
-		packagingVessels = append(packagingVessels, ToProtoPackagingVesselType(vessels))
+		packagingVessels = append(packagingVessels, ToProtoPackagingVesselType(&vessels))
 	}
 	return &beerproto.PackagingProcedureType{
 		Name: i.Name,
@@ -474,7 +666,11 @@ func ToProtoPackagingProcedureType(i *beerjson.PackagingProcedureType) *beerprot
 	}
 }
 
-func ToProtoPackagingVesselType(i beerjson.PackagingVesselType) *beerproto.PackagingVesselType{
+func ToProtoPackagingVesselType(i *beerjson.PackagingVesselType) *beerproto.PackagingVesselType{
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.PackagingVesselType{
 		Type: ToProtoPackagingVesselTypeType(i.PackagingVesselTypeType),
 		StartGravity: ToProtoGravityType(i.StartGravity),
@@ -501,7 +697,11 @@ func ToProtoPackagingVesselTypeType(i *beerjson.PackagingVesselTypeType) beerpro
 	return beerproto.PackagingVesselType_PackagingVesselTypeType(unit)
 }
 
-func ToProtoIngredientsType(i beerjson.IngredientsType) *beerproto.IngredientsType{
+func ToProtoIngredientsType(i *beerjson.IngredientsType) *beerproto.IngredientsType{
+	if i == nil {
+		return nil
+	}
+
 	miscellaneousAdditions := make([]*beerproto.MiscellaneousAdditionType, 0)
 	cultureAdditions := make([]*beerproto.CultureAdditionType, 0)
 	waterAdditions := make([]*beerproto.WaterAdditionType, 0)
@@ -509,19 +709,19 @@ func ToProtoIngredientsType(i beerjson.IngredientsType) *beerproto.IngredientsTy
 	hopAdditions := make([]*beerproto.HopAdditionType, 0)
 
 	for _, misc := range i.MiscellaneousAdditions {
-		miscellaneousAdditions = append(miscellaneousAdditions, ToProtoMiscellaneousAdditionType(misc))
+		miscellaneousAdditions = append(miscellaneousAdditions, ToProtoMiscellaneousAdditionType(&misc))
 	}
 	for _, culture := range i.CultureAdditions {
-		cultureAdditions = append(cultureAdditions, ToProtoCultureAdditionType(culture))
+		cultureAdditions = append(cultureAdditions, ToProtoCultureAdditionType(&culture))
 	}
 	for _, water := range i.WaterAdditions {
-		waterAdditions = append(waterAdditions, ToProtoWaterAdditionType(water))
+		waterAdditions = append(waterAdditions, ToProtoWaterAdditionType(&water))
 	}
 	for _, fermentable := range i.FermentableAdditions {
-		fermentableAdditions = append(fermentableAdditions, ToProtoFermentableAdditionType(fermentable))
+		fermentableAdditions = append(fermentableAdditions, ToProtoFermentableAdditionType(&fermentable))
 	}
 	for _, hop := range i.HopAdditions {
-		hopAdditions = append(hopAdditions, ToProtoHopAdditionType(hop))
+		hopAdditions = append(hopAdditions, ToProtoHopAdditionType(&hop))
 	}
 	return &beerproto.IngredientsType{
 		MiscellaneousAdditions: miscellaneousAdditions,
@@ -532,7 +732,11 @@ func ToProtoIngredientsType(i beerjson.IngredientsType) *beerproto.IngredientsTy
 	}
 }
 
-func ToProtoHopAdditionType(i beerjson.HopAdditionType) *beerproto.HopAdditionType{
+func ToProtoHopAdditionType(i *beerjson.HopAdditionType) *beerproto.HopAdditionType{
+	if i == nil {
+		return nil
+	}
+
 	hopAdditionType := &beerproto.HopAdditionType{
 		BetaAcid: ToProtoPercentType(i.BetaAcid),
 		Producer: *i.Producer,
@@ -560,15 +764,19 @@ func ToProtoHopAdditionType(i beerjson.HopAdditionType) *beerproto.HopAdditionTy
 	return hopAdditionType
 }
 
-func ToProtoHopVarietyBaseForm(i *beerjson.HopVarietyBaseForm) beerproto.HopAdditionType_HopVarietyBaseForm{
+func ToProtoHopVarietyBaseForm(i *beerjson.HopVarietyBaseForm) beerproto.HopVarietyBaseForm{
 	if i == nil {
-		return beerproto.HopAdditionType_NULL
+		return beerproto.HopVarietyBaseForm_NULL_HopVarietyBaseForm
 	}
-	unit := beerproto.HopAdditionType_HopVarietyBaseForm_value[strings.ToUpper(string(*i))]
-	return beerproto.HopAdditionType_HopVarietyBaseForm(unit)
+	unit := beerproto.HopVarietyBaseForm_value[strings.ToUpper(string(*i))]
+	return beerproto.HopVarietyBaseForm(unit)
 }
 
-func ToProtoFermentableAdditionType(i beerjson.FermentableAdditionType) *beerproto.FermentableAdditionType {
+func ToProtoFermentableAdditionType(i *beerjson.FermentableAdditionType) *beerproto.FermentableAdditionType {
+	if i == nil {
+		return nil
+	}
+
 	fermentableAdditionType := &beerproto.FermentableAdditionType{
 		Type: ToProtoFermentableBaseType(i.FermentableBaseType),
 		Origin: *i.Origin,
@@ -600,6 +808,7 @@ func ToProtoYieldType(i *beerjson.YieldType) *beerproto.YieldType{
 	if i == nil {
 		return nil
 	}
+
 	return &beerproto.YieldType{
 		FineGrind: ToProtoPercentType(i.FineGrind),
 		CoarseGrind: ToProtoPercentType(i.CoarseGrind),
@@ -612,6 +821,7 @@ func ToProtoGrainGroup(i *beerjson.FermentableBaseGrainGroup) beerproto.GrainGro
 	if i == nil {
 		return beerproto.GrainGroup_NULL_GrainGroup
 	}
+
 	unit:= beerproto.GrainGroup_value[strings.ToUpper(string(*i))]
 	return beerproto.GrainGroup(unit)
 }
@@ -620,11 +830,16 @@ func ToProtoFermentableBaseType(i *beerjson.FermentableBaseType) beerproto.Ferme
 	if i == nil {
 		return beerproto.FermentableBaseType_NULL_FermentableBaseType
 	}
+
 	unit := beerproto.FermentableBaseType_value[strings.ToUpper(string(*i))]
 	return beerproto.FermentableBaseType(unit)
 }
 
-func ToProtoWaterAdditionType(i beerjson.WaterAdditionType) *beerproto.WaterAdditionType{
+func ToProtoWaterAdditionType(i *beerjson.WaterAdditionType) *beerproto.WaterAdditionType{
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.WaterAdditionType{
 		Flouride: ToProtoConcentrationType(i.Flouride),
 		Sulfate: ToProtoConcentrationType(i.Sulfate),
@@ -661,7 +876,11 @@ func ToProtoConcentrationUnitType(i beerjson.ConcentrationUnitType) beerproto.Co
 }
 
 
-func ToProtoCultureAdditionType(i beerjson.CultureAdditionType) *beerproto.CultureAdditionType{
+func ToProtoCultureAdditionType(i *beerjson.CultureAdditionType) *beerproto.CultureAdditionType{
+	if i == nil {
+		return nil
+	}
+
 	cultureAdditionType := &beerproto.CultureAdditionType{
 		Form: ToProtoCultureBaseForm(i.CultureBaseForm),
 		ProductId: *i.ProductId,
@@ -702,7 +921,11 @@ func ToProtoCultureBaseForm(i *beerjson.CultureBaseForm) beerproto.CultureAdditi
 	return beerproto.CultureAdditionType_CultureBaseForm(unit)
 }
 
-func ToProtoMiscellaneousAdditionType(i beerjson.MiscellaneousAdditionType) *beerproto.MiscellaneousAdditionType{
+func ToProtoMiscellaneousAdditionType(i *beerjson.MiscellaneousAdditionType) *beerproto.MiscellaneousAdditionType{
+	if i == nil {
+		return nil
+	}
+
 	miscellaneousAdditionType := &beerproto.MiscellaneousAdditionType{
 		Name: *i.Name,
 		Producer: *i.Producer,
@@ -797,7 +1020,7 @@ func ToProtoFermentationProcedureType(i *beerjson.FermentationProcedureType) *be
 	}
 	steps := make([]*beerproto.FermentationStepType, 0)
 	for _, step := range i.FermentationSteps {
-		steps = append(steps, ToProtoFermentationStepType(step))
+		steps = append(steps, ToProtoFermentationStepType(&step))
 	}
 	return &beerproto.FermentationProcedureType{
 		Description: *i.Description,
@@ -807,7 +1030,11 @@ func ToProtoFermentationProcedureType(i *beerjson.FermentationProcedureType) *be
 	}
 }
 
-func ToProtoFermentationStepType(i beerjson.FermentationStepType) *beerproto.FermentationStepType{
+func ToProtoFermentationStepType(i *beerjson.FermentationStepType) *beerproto.FermentationStepType{
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.FermentationStepType{
 		Name: i.Name,
 		EndTemperature: ToProtoTemperatureType(i.EndTemperature),
@@ -899,7 +1126,11 @@ func ToProtoRecipeStyleType_StyleCategories(i *beerjson.StyleCategories) beerpro
 	return beerproto.RecipeStyleType_StyleCategories(unit)
 }
 
-func ToProtoEfficiencyType(i beerjson.EfficiencyType) *beerproto.EfficiencyType{
+func ToProtoEfficiencyType(i *beerjson.EfficiencyType) *beerproto.EfficiencyType{
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.EfficiencyType{
 		Conversion: ToProtoPercentType(i.Conversion),
 		Lauter: ToProtoPercentType(i.Lauter),
@@ -936,7 +1167,11 @@ func ToProtoMashProcedureType(i *beerjson.MashProcedureType) *beerproto.MashProc
 	}
 }
 
-func ToProtoMashStepType(i beerjson.MashStepType) *beerproto.MashStepType {
+func ToProtoMashStepType(i *beerjson.MashStepType) *beerproto.MashStepType {
+	if i == nil {
+		return nil
+	}
+
 	return &beerproto.MashStepType{
 		StepTime:          ToProtoTimeType(&i.StepTime),
 		RampTime:          ToProtoTimeType(i.RampTime),
