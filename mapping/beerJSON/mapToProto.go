@@ -1,27 +1,13 @@
 package beerJSON
 
 import (
-	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/RossMerr/beerjson.go"
 	"github.com/beerproto/tools/beerproto"
 )
 
-func MapToProto(data []byte) (*beerproto.Recipe, error) {
-	i := &beerjson.Beerjson{}
-	str := &struct {
-		Beer *beerjson.Beerjson `json:"beerjson"`
-	}{
-		Beer: i,
-	}
-
-	err := json.Unmarshal(data, &str)
-	if err != nil {
-		return nil, fmt.Errorf("beerJSON: bad json format %w", err)
-	}
-
+func MapToProto(i *beerjson.Beerjson) (*beerproto.Recipe, error) {
 	output := &beerproto.Recipe{
 		Mashes:                   []*beerproto.MashProcedureType{},
 		Recipes:                  []*beerproto.RecipeType{},
@@ -88,6 +74,25 @@ func MapToProto(data []byte) (*beerproto.Recipe, error) {
 	}
 
 	return output, nil
+}
+
+func ToProtoEquipmentItemType(i *beerjson.EquipmentItemType) *beerproto.EquipmentItemType {
+	if i == nil {
+		return nil
+	}
+
+	return &beerproto.EquipmentItemType{
+		BoilRatePerHour:     ToProtoVolumeType(i.BoilRatePerHour),
+		Type:                UseString(i.KeyType),
+		Form:                ToProtoEquipmentBaseForm(i.EquipmentBaseForm),
+		DrainRatePerMinute:  ToProtoVolumeType(i.DrainRatePerMinute),
+		SpecificHeat:        ToProtoSpecificHeatType(i.SpecificHeat),
+		GrainAbsorptionRate: ToProtoSpecificVolumeType(i.GrainAbsorptionRate),
+		Name:                UseString(i.Name),
+		MaximumVolume:       ToProtoVolumeType(i.MaximumVolume),
+		Weight:              ToProtoMassType(i.Weight),
+		Loss:                ToProtoVolumeType(&i.Loss),
+	}
 }
 
 func ToProtoWaterBase(i *beerjson.WaterBase) *beerproto.WaterBase {
@@ -202,25 +207,6 @@ func ToProtoEquipmentType(i *beerjson.EquipmentType) *beerproto.EquipmentType {
 	}
 }
 
-func ToProtoEquipmentItemType(i *beerjson.EquipmentItemType) *beerproto.EquipmentItemType {
-	if i == nil {
-		return nil
-	}
-
-	return &beerproto.EquipmentItemType{
-		BoilRatePerHour:     ToProtoVolumeType(i.BoilRatePerHour),
-		Type:                UseString(i.KeyType),
-		Form:                ToProtoEquipmentBaseForm(i.EquipmentBaseForm),
-		DrainRatePerMinute:  ToProtoVolumeType(i.DrainRatePerMinute),
-		SpecificHeat:        ToProtoSpecificHeatType(i.SpecificHeat),
-		GrainAbsorptionRate: ToProtoSpecificVolumeType(i.GrainAbsorptionRate),
-		Name:                UseString(i.Name),
-		MaximumVolume:       ToProtoVolumeType(i.MaximumVolume),
-		Weight:              ToProtoMassType(i.Weight),
-		Loss:                ToProtoVolumeType(&i.Loss),
-	}
-}
-
 func ToProtoSpecificHeatType(i *beerjson.SpecificHeatType) *beerproto.SpecificHeatType {
 	if i == nil {
 		return nil
@@ -256,7 +242,7 @@ func ToProtoCultureInformation(i *beerjson.CultureInformation) *beerproto.Cultur
 	}
 
 	return &beerproto.CultureInformation{
-		Form:             ToProtCultureBaseForm(i.CultureBaseForm),
+		Form:             ToProtoCultureBaseForm(i.CultureBaseForm),
 		Producer:         UseString(i.Producer),
 		TemperatureRange: ToProtoTemperatureRangeType(i.TemperatureRange),
 		Notes:            UseString(i.Notes),
@@ -323,15 +309,6 @@ func ToProtoTemperatureRangeType(i *beerjson.TemperatureRangeType) *beerproto.Te
 		Minimum: ToProtoTemperatureType(&i.Minimum),
 		Maximum: ToProtoTemperatureType(&i.Maximum),
 	}
-}
-
-func ToProtCultureBaseForm(i *beerjson.CultureBaseForm) beerproto.CultureInformation_CultureBaseForm {
-	if i == nil {
-		return beerproto.CultureInformation_NULL_CultureBaseForm
-	}
-
-	unit := beerproto.CultureInformation_CultureBaseForm_value[strings.ToUpper(string(*i))]
-	return beerproto.CultureInformation_CultureBaseForm(unit)
 }
 
 func ToProtoFermentableType(i *beerjson.FermentableType) *beerproto.FermentableType {
@@ -929,12 +906,12 @@ func ToProtoCultureAdditionType(i *beerjson.CultureAdditionType) *beerproto.Cult
 	return cultureAdditionType
 }
 
-func ToProtoCultureBaseForm(i *beerjson.CultureBaseForm) beerproto.CultureAdditionType_CultureBaseForm {
+func ToProtoCultureBaseForm(i *beerjson.CultureBaseForm) beerproto.CultureBaseForm {
 	if i == nil {
-		return beerproto.CultureAdditionType_NULL_CultureBaseForm
+		return beerproto.CultureBaseForm_NULL_CultureBaseForm
 	}
-	unit := beerproto.CultureAdditionType_CultureBaseForm_value[strings.ToUpper(string(*i))]
-	return beerproto.CultureAdditionType_CultureBaseForm(unit)
+	unit := beerproto.CultureBaseForm_value[strings.ToUpper(string(*i))]
+	return beerproto.CultureBaseForm(unit)
 }
 
 func ToProtoMiscellaneousAdditionType(i *beerjson.MiscellaneousAdditionType) *beerproto.MiscellaneousAdditionType {
