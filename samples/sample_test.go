@@ -30,70 +30,70 @@ func TestSchemas_Generate(t *testing.T) {
 			name: "CheaterHops",
 			json: "CheaterHops.json",
 		},
-		// {
-		// 	name: "CorianderSpice",
-		// 	json: "CorianderSpice.json",
-		// },
-		// {
-		// 	name: "CrystalMaltSpecialtyGrain",
-		// 	json: "CrystalMaltSpecialtyGrain.json",
-		// },
-		// {
-		// 	name: "EquipmentSet",
-		// 	json: "EquipmentSet.json",
-		// },
-		// {
-		// 	name: "FermentableRecord",
-		// 	json: "FermentableRecord.json",
-		// },
-		// {
-		// 	name: "HoppedExtract",
-		// 	json: "HoppedExtract.json",
-		// },
-		// {
-		// 	name: "HopRecordWithAllFields",
-		// 	json: "HopRecordWithAllFields.json",
-		// },
-		// {
-		// 	name: "HopWithRequiredFieldsOnly",
-		// 	json: "HopWithRequiredFieldsOnly.json",
-		// },
-		// {
-		// 	name: "IrishMoss",
-		// 	json: "IrishMoss.json",
-		// },
-		// {
-		// 	name: "MashSingleStepInfusion",
-		// 	json: "MashSingleStepInfusion.json",
-		// },
-		// {
-		// 	name: "MashTwoStepTemperature",
-		// 	json: "MashTwoStepTemperature.json",
-		// },
-		// {
-		// 	name: "MedievalAle",
-		// 	json: "MedievalAle.json",
-		// },
-		// {
-		// 	name: "SampleWaterProfile",
-		// 	json: "SampleWaterProfile.json",
-		// },
-		// {
-		// 	name: "StyleBohemianPilsner",
-		// 	json: "StyleBohemianPilsner.json",
-		// },
-		// {
-		// 	name: "StyleDryIrishStoutWithAllFields",
-		// 	json: "StyleDryIrishStoutWithAllFields.json",
-		// },
-		// {
-		// 	name: "YeastWithMorePopularFields",
-		// 	json: "YeastWithMorePopularFields.json",
-		// },
-		// {
-		// 	name: "YeastWithRequiredFieldsOnly",
-		// 	json: "YeastWithRequiredFieldsOnly.json",
-		// },
+		{
+			name: "CorianderSpice",
+			json: "CorianderSpice.json",
+		},
+		{
+			name: "CrystalMaltSpecialtyGrain",
+			json: "CrystalMaltSpecialtyGrain.json",
+		},
+		{
+			name: "EquipmentSet",
+			json: "EquipmentSet.json",
+		},
+		{
+			name: "FermentableRecord",
+			json: "FermentableRecord.json",
+		},
+		{
+			name: "HoppedExtract",
+			json: "HoppedExtract.json",
+		},
+		{
+			name: "HopRecordWithAllFields",
+			json: "HopRecordWithAllFields.json",
+		},
+		{
+			name: "HopWithRequiredFieldsOnly",
+			json: "HopWithRequiredFieldsOnly.json",
+		},
+		{
+			name: "IrishMoss",
+			json: "IrishMoss.json",
+		},
+		{
+			name: "MashSingleStepInfusion",
+			json: "MashSingleStepInfusion.json",
+		},
+		{
+			name: "MashTwoStepTemperature",
+			json: "MashTwoStepTemperature.json",
+		},
+		{
+			name: "MedievalAle",
+			json: "MedievalAle.json",
+		},
+		{
+			name: "SampleWaterProfile",
+			json: "SampleWaterProfile.json",
+		},
+		{
+			name: "StyleBohemianPilsner",
+			json: "StyleBohemianPilsner.json",
+		},
+		{
+			name: "StyleDryIrishStoutWithAllFields",
+			json: "StyleDryIrishStoutWithAllFields.json",
+		},
+		{
+			name: "YeastWithMorePopularFields",
+			json: "YeastWithMorePopularFields.json",
+		},
+		{
+			name: "YeastWithRequiredFieldsOnly",
+			json: "YeastWithRequiredFieldsOnly.json",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

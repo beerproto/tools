@@ -232,8 +232,24 @@ func ToProtoEquipmentBaseForm(i *beerjson.EquipmentBaseForm) beerproto.Equipment
 		return beerproto.EquipmentItemType_NULL
 	}
 
-	unit := beerproto.EquipmentItemType_EquipmentBaseForm_value[strings.ToUpper(string(*i))]
-	return beerproto.EquipmentItemType_EquipmentBaseForm(unit)
+	switch *i {
+	case beerjson.EquipmentBaseForm_HLT:
+		return beerproto.EquipmentItemType_HLT
+	case beerjson.EquipmentBaseForm_MashTun:
+		return beerproto.EquipmentItemType_MASH_TUN
+	case beerjson.EquipmentBaseForm_LauterTun:
+		return beerproto.EquipmentItemType_LAUTER_TUN
+	case beerjson.EquipmentBaseForm_BrewKettle:
+		return beerproto.EquipmentItemType_BREW_KETTLE
+	case beerjson.EquipmentBaseForm_Fermenter:
+		return beerproto.EquipmentItemType_FERMENTER
+	case beerjson.EquipmentBaseForm_AgingVessel:
+		return beerproto.EquipmentItemType_AGING_VESSEL
+	case beerjson.EquipmentBaseForm_PackagingVessel:
+		return beerproto.EquipmentItemType_PACKAGING_VESSEL
+	}
+
+	return beerproto.EquipmentItemType_NULL
 }
 
 func ToProtoCultureInformation(i *beerjson.CultureInformation) *beerproto.CultureInformation {
@@ -1230,21 +1246,21 @@ func ToProtoSpecificVolumeUnitType(i beerjson.SpecificVolumeUnitType) beerproto.
 	unit := beerproto.SpecificVolumeType_SpecificVolumeUnitType_value[strings.ToUpper(string(i))]
 
 	switch i {
-	case "qt/lb":
+	case beerjson.SpecificVolumeUnitType_QtLb:
 		return beerproto.SpecificVolumeType_QTLB
-	case "gal/lb":
+	case beerjson.SpecificVolumeUnitType_GalLb:
 		return beerproto.SpecificVolumeType_GALLB
-	case "gal/oz":
+	case beerjson.SpecificVolumeUnitType_GalOz:
 		return beerproto.SpecificVolumeType_GALOZ
-	case "l/g":
+	case beerjson.SpecificVolumeUnitType_LG:
 		return beerproto.SpecificVolumeType_LG
-	case "l/kg":
+	case beerjson.SpecificVolumeUnitType_LKg:
 		return beerproto.SpecificVolumeType_LKG
-	case "floz/oz":
+	case beerjson.SpecificVolumeUnitType_FlozOz:
 		return beerproto.SpecificVolumeType_FLOZOZ
-	case "m^3/kg":
+	case beerjson.SpecificVolumeUnitType_M3Kg:
 		return beerproto.SpecificVolumeType_M3KG
-	case "ft^3/lb":
+	case beerjson.SpecificVolumeUnitType_Ft3Lb:
 		return beerproto.SpecificVolumeType_FT3LB
 	}
 

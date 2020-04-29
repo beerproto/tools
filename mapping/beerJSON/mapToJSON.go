@@ -227,8 +227,24 @@ func ToJSONEquipmentBaseForm(i beerproto.EquipmentItemType_EquipmentBaseForm) *b
 		return nil
 	}
 
-	unit := beerproto.EquipmentItemType_EquipmentBaseForm_name[int32(i)]
-	t := beerjson.EquipmentBaseForm(strings.ToLower(unit))
+	var t beerjson.EquipmentBaseForm
+	switch i {
+	case beerproto.EquipmentItemType_HLT:
+		t = beerjson.EquipmentBaseForm_HLT
+	case beerproto.EquipmentItemType_MASH_TUN:
+		t = beerjson.EquipmentBaseForm_MashTun
+	case beerproto.EquipmentItemType_LAUTER_TUN:
+		t = beerjson.EquipmentBaseForm_LauterTun
+	case beerproto.EquipmentItemType_BREW_KETTLE:
+		t = beerjson.EquipmentBaseForm_BrewKettle
+	case beerproto.EquipmentItemType_FERMENTER:
+		t = beerjson.EquipmentBaseForm_Fermenter
+	case beerproto.EquipmentItemType_AGING_VESSEL:
+		t = beerjson.EquipmentBaseForm_AgingVessel
+	case beerproto.EquipmentItemType_PACKAGING_VESSEL:
+		t = beerjson.EquipmentBaseForm_PackagingVessel
+	}
+
 	return &t
 }
 
@@ -360,18 +376,17 @@ func ToJSONDiastaticPowerType(i *beerproto.DiastaticPowerType) *beerjson.Diastat
 	}
 	return &beerjson.DiastaticPowerType{
 		Value: i.Value,
-		Unit:  *ToJSONDiastaticPowerUnitType(i.Unit),
+		Unit:  ToJSONDiastaticPowerUnitType(i.Unit),
 	}
 }
 
-func ToJSONDiastaticPowerUnitType(i beerproto.DiastaticPowerType_DiastaticPowerUnitType) *beerjson.DiastaticPowerUnitType {
+func ToJSONDiastaticPowerUnitType(i beerproto.DiastaticPowerType_DiastaticPowerUnitType) beerjson.DiastaticPowerUnitType {
 	if i == beerproto.DiastaticPowerType_NULL {
-		return nil
+		return beerjson.DiastaticPowerUnitType_Lintner
 	}
 
 	unit := beerproto.DiastaticPowerType_DiastaticPowerUnitType_name[int32(i)]
-	t := beerjson.DiastaticPowerUnitType(strings.ToLower(unit))
-	return &t
+	return beerjson.DiastaticPowerUnitType(strings.ToLower(unit))
 }
 
 func ToJSONStyleType(i *beerproto.StyleType) *beerjson.StyleType {
@@ -429,18 +444,21 @@ func ToJSONBitternessType(i *beerproto.BitternessType) *beerjson.BitternessType 
 	}
 	return &beerjson.BitternessType{
 		Value: i.Value,
-		Unit:  *ToJSONBitternessUnitType(i.Unit),
+		Unit:  ToJSONBitternessUnitType(i.Unit),
 	}
 }
 
-func ToJSONBitternessUnitType(i beerproto.BitternessType_BitternessUnitType) *beerjson.BitternessUnitType {
+func ToJSONBitternessUnitType(i beerproto.BitternessType_BitternessUnitType) beerjson.BitternessUnitType {
 	if i == beerproto.BitternessType_NULL {
-		return nil
+		return beerjson.BitternessUnitType_IBUs
 	}
 
-	unit := beerproto.BitternessType_BitternessUnitType_name[int32(i)]
-	t := beerjson.BitternessUnitType(strings.ToLower(unit))
-	return &t
+	switch i {
+	case beerproto.BitternessType_IBUs:
+		return beerjson.BitternessUnitType_IBUs
+	}
+
+	return beerjson.BitternessUnitType_IBUs
 }
 
 func ToJSONPercentRangeType(i *beerproto.PercentRangeType) *beerjson.PercentRangeType {
@@ -1267,21 +1285,21 @@ func ToJSONSpecificVolumeUnitType(i beerproto.SpecificVolumeType_SpecificVolumeU
 
 	switch i {
 	case beerproto.SpecificVolumeType_QTLB:
-		return beerjson.SpecificVolumeUnitType("qt/lb")
+		return beerjson.SpecificVolumeUnitType_QtLb
 	case beerproto.SpecificVolumeType_GALLB:
-		return beerjson.SpecificVolumeUnitType("gal/lb")
+		return beerjson.SpecificVolumeUnitType_GalLb
 	case beerproto.SpecificVolumeType_GALOZ:
-		return beerjson.SpecificVolumeUnitType("gal/oz")
+		return beerjson.SpecificVolumeUnitType_GalOz
 	case beerproto.SpecificVolumeType_LG:
-		return beerjson.SpecificVolumeUnitType("l/g")
+		return beerjson.SpecificVolumeUnitType_LG
 	case beerproto.SpecificVolumeType_LKG:
-		return beerjson.SpecificVolumeUnitType("l/kg")
+		return beerjson.SpecificVolumeUnitType_LKg
 	case beerproto.SpecificVolumeType_FLOZOZ:
-		return beerjson.SpecificVolumeUnitType("floz/oz")
+		return beerjson.SpecificVolumeUnitType_FlozOz
 	case beerproto.SpecificVolumeType_M3KG:
-		return beerjson.SpecificVolumeUnitType("m^3/kg")
+		return beerjson.SpecificVolumeUnitType_M3Kg
 	case beerproto.SpecificVolumeType_FT3LB:
-		return beerjson.SpecificVolumeUnitType("ft^3/lb")
+		return beerjson.SpecificVolumeUnitType_Ft3Lb
 	}
 
 	return beerjson.SpecificVolumeUnitType(i.String())
