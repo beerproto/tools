@@ -760,8 +760,23 @@ func ToJSONHopVarietyBaseForm(i beerproto.HopVarietyBaseForm) *beerjson.HopVarie
 		return nil
 	}
 
-	unit := beerproto.HopVarietyBaseForm_name[int32(i)]
-	t := beerjson.HopVarietyBaseForm(strings.ToLower(unit))
+	var t beerjson.HopVarietyBaseForm
+
+	switch i {
+	case beerproto.HopVarietyBaseForm_EXTRACT_HopVarietyBaseForm:
+		t = beerjson.HopVarietyBaseForm_Extract
+	case beerproto.HopVarietyBaseForm_LEAF:
+		t = beerjson.HopVarietyBaseForm_Leaf
+	case beerproto.HopVarietyBaseForm_LEAFWET:
+		t = beerjson.HopVarietyBaseForm_LeafWet
+	case beerproto.HopVarietyBaseForm_PELLET:
+		t = beerjson.HopVarietyBaseForm_Pellet
+	case beerproto.HopVarietyBaseForm_POWDER:
+		t = beerjson.HopVarietyBaseForm_Powder
+	case beerproto.HopVarietyBaseForm_PLUG:
+		t = beerjson.HopVarietyBaseForm_Plug
+	}
+
 	return &t
 }
 

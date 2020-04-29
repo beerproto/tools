@@ -26,10 +26,10 @@ func TestSchemas_Generate(t *testing.T) {
 			name: "BrettDosedKegsSaison",
 			json: "BrettDosedKegsSaison.json",
 		},
-		// {
-		// 	name: "CheaterHops",
-		// 	json: "CheaterHops.json",
-		// },
+		{
+			name: "CheaterHops",
+			json: "CheaterHops.json",
+		},
 		// {
 		// 	name: "CorianderSpice",
 		// 	json: "CorianderSpice.json",
