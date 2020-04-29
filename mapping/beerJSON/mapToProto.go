@@ -691,7 +691,7 @@ func ToProtoPackagingVesselTypeType(i *beerjson.PackagingVesselTypeType) beerpro
 	return beerproto.PackagingVesselType_PackagingVesselTypeType(unit)
 }
 
-func ToProtoIngredientsType(i *beerjson.IngredientsType) *beerproto.IngredientsType {
+func 	ToProtoIngredientsType(i *beerjson.IngredientsType) *beerproto.IngredientsType {
 	if i == nil {
 		return nil
 	}
@@ -1073,6 +1073,7 @@ func ToProtoColorType(i *beerjson.ColorType) *beerproto.ColorType {
 
 func ToProtoColorUnitType(i beerjson.ColorUnitType) beerproto.ColorType_ColorUnitType {
 	unit := beerproto.ColorType_ColorUnitType_value[strings.ToUpper(string(i))]
+
 	return beerproto.ColorType_ColorUnitType(unit)
 }
 
@@ -1090,7 +1091,7 @@ func ToProtoIBUMethodType(i *beerjson.IBUMethodType) beerproto.IBUEstimateType_I
 	if i == nil {
 		return beerproto.IBUEstimateType_NULL
 	}
-	unit := beerproto.IBUEstimateType_IBUMethodType_value[strings.ToUpper(string(*i))]
+	unit := beerproto.IBUEstimateType_IBUMethodType_value[string(*i)]
 	return beerproto.IBUEstimateType_IBUMethodType(unit)
 }
 
@@ -1149,10 +1150,17 @@ func ToProtoMashProcedureType(i *beerjson.MashProcedureType) *beerproto.MashProc
 	if i == nil {
 		return nil
 	}
+
+	mashSteps := []*beerproto.MashStepType{}
+	for _, step := range i.MashSteps {
+		mashSteps = append(mashSteps, ToProtoMashStepType(&step))
+	}
+
 	return &beerproto.MashProcedureType{
 		Name:             i.Name,
 		Notes:            UseString(i.Notes),
 		GrainTemperature: ToProtoTemperatureType(&i.GrainTemperature),
+		MashSteps: mashSteps,
 	}
 }
 
@@ -1204,6 +1212,26 @@ func ToProtoSpecificVolumeType(i *beerjson.SpecificVolumeType) *beerproto.Specif
 
 func ToProtoSpecificVolumeUnitType(i beerjson.SpecificVolumeUnitType) beerproto.SpecificVolumeType_SpecificVolumeUnitType {
 	unit := beerproto.SpecificVolumeType_SpecificVolumeUnitType_value[strings.ToUpper(string(i))]
+
+	switch i {
+	case "qt/lb":
+		return beerproto.SpecificVolumeType_QTLB
+	case "gal/lb":
+		return beerproto.SpecificVolumeType_GALLB
+	case "gal/oz":
+		return beerproto.SpecificVolumeType_GALOZ
+	case "l/g":
+		return beerproto.SpecificVolumeType_LG
+	case "l/kg":
+		return beerproto.SpecificVolumeType_LKG
+	case "floz/oz":
+		return beerproto.SpecificVolumeType_FLOZOZ
+	case "m^3/kg":
+		return beerproto.SpecificVolumeType_M3KG
+	case "ft^3/lb":
+		return beerproto.SpecificVolumeType_FT3LB
+	}
+
 	return beerproto.SpecificVolumeType_SpecificVolumeUnitType(unit)
 }
 
