@@ -115,15 +115,9 @@ func TestSchemas_Generate(t *testing.T) {
 				t.Error(err)
 			}
 
-			recipe, err := mapping.MapToProto(beer)
-			if err != nil {
-				t.Error(err)
-			}
+			recipe := mapping.MapToProto(beer)
 
-			j, err := mapping.MapToJSON(recipe)
-			if err != nil {
-				t.Error(err)
-			}
+			j := mapping.MapToJSON(recipe)
 
 			bytes, err := json.Marshal(j)
 			if err != nil {

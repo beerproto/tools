@@ -7,7 +7,7 @@ import (
 	"github.com/beerproto/tools/beerproto"
 )
 
-func MapToJSON(i *beerproto.Recipe) (*beerjson.Beerjson, error) {
+func MapToJSON(i *beerproto.Recipe) *beerjson.Beerjson {
 	output := &beerjson.Beerjson{
 		Mashes:                   []beerjson.MashProcedureType{},
 		Recipes:                  []beerjson.RecipeType{},
@@ -74,7 +74,7 @@ func MapToJSON(i *beerproto.Recipe) (*beerjson.Beerjson, error) {
 	}
 
 
-	return output, nil
+	return output
 }
 
 func ToJSONWaterBase(i *beerproto.WaterBase) *beerjson.WaterBase {
