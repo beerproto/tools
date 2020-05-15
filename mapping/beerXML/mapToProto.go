@@ -4,9 +4,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/RossMerr/beerjson.go"
-	beerXML "github.com/RossMerr/beerxml.go"
-	"github.com/beerproto/tools/beerproto"
+	"github.com/beerproto/beerjson.go"
+	"github.com/beerproto/beerproto.go"
+	beerXML "github.com/beerproto/beerxml.go"
 )
 
 func MapToProto(i *beerXML.Recipe) *beerproto.Recipe {
@@ -90,33 +90,33 @@ func ToProtoRecipeType(i *beerXML.Recipe, s *beerXML.Style) *beerproto.RecipeTyp
 		// Efficiency:          ToProtoEfficiencyType(&i.Efficiency),
 		Style: ToProtoRecipeStyleType(i.Style),
 		//IbuEstimate:         ToProtoIBUEstimateType(s.IBUMAX),
-		ColorEstimate:       ToProtoColorType(s.Colormax),
+		ColorEstimate: ToProtoColorType(s.Colormax),
 		// BeerPH:              ToProtoAcidityType(i.BeerPH),
-		Name:                i.Name,
-		Type:                ToProtoRecipeTypeType(i.Type),
-		Coauthor:            i.AsstBrewer,
-		OriginalGravity:     ToProtoGravityType(s.OGMAX),
-		FinalGravity:        ToProtoGravityType(s.FGMAX),
-		Carbonation:         float64(s.Carbmax),
-		Fermentation:        ToProtoFermentationProcedureType(i),
-		Author:              i.Brewer,
+		Name:            i.Name,
+		Type:            ToProtoRecipeTypeType(i.Type),
+		Coauthor:        i.AsstBrewer,
+		OriginalGravity: ToProtoGravityType(s.OGMAX),
+		FinalGravity:    ToProtoGravityType(s.FGMAX),
+		Carbonation:     float64(s.Carbmax),
+		Fermentation:    ToProtoFermentationProcedureType(i),
+		Author:          i.Brewer,
 		//Ingredients:         ToProtoIngredientsType(&i.Ingredients),
-		Mash:                ToProtoMashProcedureType(i.Mash),
+		Mash: ToProtoMashProcedureType(i.Mash),
 		//Packaging:           ToProtoPackagingProcedureType(i.Packaging),
 		//Boil:                ToProtoBoilProcedureType(i.Boil),
-		Taste:               ToProtoTasteType(s.Profile),
+		Taste: ToProtoTasteType(s.Profile),
 		//CaloriesPerPint:     UseFloat(i.CaloriesPerPint),
 		//Created:             created,
 		//BatchSize:           ToProtoVolumeType(&i.BatchSize),
-		Notes:               i.Notes,
-		AlcoholByVolume:     ToProtoPercentType(s.ABVMAX),
+		Notes:           i.Notes,
+		AlcoholByVolume: ToProtoPercentType(s.ABVMAX),
 		//ApparentAttenuation: ToProtoPercentType(i.ApparentAttenuation),
 	}
 }
 
 func ToProtoTasteType(i string) *beerproto.TasteType {
 	return &beerproto.TasteType{
-		Notes:  i,
+		Notes: i,
 	}
 }
 func ToProtoEquipmentItemType(i *beerjson.EquipmentItemType) *beerproto.EquipmentItemType {
@@ -241,10 +241,8 @@ func ToProtoEquipmentType(i *beerXML.Equipment) *beerproto.EquipmentType {
 
 	equipmentItemType := []*beerproto.EquipmentItemType{}
 
-
 	equipmentItemType = append(equipmentItemType, &beerproto.EquipmentItemType{
-		SpecificHeat: 	 ToProtoSpecificHeatType(i.Tunspecificheat),
-
+		SpecificHeat: ToProtoSpecificHeatType(i.Tunspecificheat),
 	})
 
 	// for _, item := range i.EquipmentItems {
@@ -310,8 +308,8 @@ func ToProtoCultureInformation(i beerXML.Yeast) *beerproto.CultureInformation {
 		Notes:            i.Notes,
 		BestFor:          i.Bestfor,
 		//Inventory:        ToProtoCultureInventoryType(i.Inventory),
-		ProductId:        i.Productid,
-		Name:             i.Name,
+		ProductId: i.Productid,
+		Name:      i.Name,
 		//AlcoholTolerance: ToProtoPercentType(i.AlcoholTolerance),
 		//Glucoamylase:     UseBool(i.Glucoamylase),
 		Type:             ToProtoCultureBaseType(i.Type),
@@ -471,13 +469,12 @@ func ToProtoStyleType(i *beerXML.Style) *beerproto.StyleType {
 		AlcoholByVolume:              ToProtoPercentRangeType(i.ABVMAX, i.ABVMIN),
 		InternationalBitternessUnits: ToProtoBitternessRangeType(i.IBUMAX, i.IBUMIN),
 		//Appearance:                   UseString(i.Appearance),
-		Category:                     i.Category,
-		StyleLetter:                  i.Styleletter,
-		Type:                         ToProtoStyleType_StyleCategories(i.Type),
+		Category:    i.Category,
+		StyleLetter: i.Styleletter,
+		Type:        ToProtoStyleType_StyleCategories(i.Type),
 		//OverallImpression:            UseString(i.OverallImpression),
 	}
 }
-
 
 func ToProtoColorRangeType(max, min float32) *beerproto.ColorRangeType {
 	if max == 0 && min == 0 {
@@ -500,7 +497,6 @@ func ToProtoGravityRangeType(max, min float32) *beerproto.GravityRangeType {
 		Maximum: ToProtoGravityType(max),
 	}
 }
-
 
 func ToProtoStyleType_StyleCategories(i string) beerproto.StyleType_StyleCategories {
 	if i == "" {
@@ -932,7 +928,6 @@ func ToProtoFermentationProcedureType(i *beerXML.Recipe) *beerproto.Fermentation
 		StartTemperature: ToProtoTemperatureType(i.Secondarytemp),
 	})
 
-
 	steps = append(steps, &beerproto.FermentationStepType{
 		Name:           "Tertiary",
 		EndTemperature: ToProtoTemperatureType(i.Tertiarytemp),
@@ -977,7 +972,7 @@ func ToProtoRecipeTypeType(i string) beerproto.RecipeType_RecipeTypeType {
 func ToProtoColorType(i float32) *beerproto.ColorType {
 	return &beerproto.ColorType{
 		Value: float64(i),
-		Unit: beerproto.ColorType_SRM,
+		Unit:  beerproto.ColorType_SRM,
 	}
 }
 
@@ -1117,10 +1112,10 @@ func ToProtoMashStepType(i beerXML.MashStep) *beerproto.MashStepType {
 		WaterGrainRatio: ToProtoSpecificVolumeType(i.Infuseamount),
 	}
 
-	if t == beerproto.MashStepType_INFUSION{
+	if t == beerproto.MashStepType_INFUSION {
 		mashStep.Amount = &beerproto.VolumeType{
 			Value: float64(i.Infuseamount),
-			Unit: beerproto.VolumeType_L,
+			Unit:  beerproto.VolumeType_L,
 		}
 	}
 

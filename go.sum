@@ -14,6 +14,14 @@ github.com/RossMerr/beerxml.go v0.0.0-20200430134433-c588016af917 h1:zWSmOKw8XWb
 github.com/RossMerr/beerxml.go v0.0.0-20200430134433-c588016af917/go.mod h1:DTGt02O0bw1Ad5FMmRernwQmMYFnDD/vchyBi0EDsoM=
 github.com/RossMerr/beerxml.go v0.0.0-20200430134713-aefa6554daf8 h1:YJcaIdQbZs6lOjYaMUUS+4d4BkM2XgLLNTGr2y2pkmg=
 github.com/RossMerr/beerxml.go v0.0.0-20200430134713-aefa6554daf8/go.mod h1:DTGt02O0bw1Ad5FMmRernwQmMYFnDD/vchyBi0EDsoM=
+github.com/beerproto/beerjson.go v0.0.0-20200429154840-b671e54d8cdb h1:7cPE+jcmbmmA6x0p4BAcYmUs6nvU/UJE3rAr2ie9V40=
+github.com/beerproto/beerjson.go v0.0.0-20200429154840-b671e54d8cdb/go.mod h1:ZK5yGcUHGDHt8jsZMWp0UCwkhO1GjiV4x07XLzz8StA=
+github.com/beerproto/beerjson.go v0.0.0-20200515134641-6b68b6ff5624 h1:SI9MI1PnAJWcQDMlv4PD2LyVn7vbWyVXRfoZ5rYOk4s=
+github.com/beerproto/beerjson.go v0.0.0-20200515134641-6b68b6ff5624/go.mod h1:HncpRFQe2OhyO1AueGG3sLNcijFE6us54f7AHYUFfYw=
+github.com/beerproto/beerproto.go v1.0.2 h1:sw77t1AObAkCuVHZtx2ItcU2jsl1ZS3yAjC9kjDfvwg=
+github.com/beerproto/beerproto.go v1.0.2/go.mod h1:NxMerYpzHSZ/pXFNuc9W6Ai7O7RW9rLVCVt9xxozLWw=
+github.com/beerproto/beerxml.go v0.0.0-20200430134713-aefa6554daf8 h1:r4Kph0iJtHfdp21qlNBQoYTnrglQ03c779YSN3zgH+w=
+github.com/beerproto/beerxml.go v0.0.0-20200430134713-aefa6554daf8/go.mod h1:vgQlBEPkvK7MHpPfYNQ1ivoXupihcpGGnbk6McHH2yI=
 github.com/golang/protobuf v1.4.0-rc.1/go.mod h1:ceaxUfeHdC40wWswd/P6IGgMaK3YpKi5j83Wpe3EHw8=
 github.com/golang/protobuf v1.4.0-rc.1.0.20200221234624-67d41d38c208/go.mod h1:xKAWHe0F5eneWXFV3EuXVDTCmh+JuBKY0li0aMyXATA=
 github.com/golang/protobuf v1.4.0-rc.2/go.mod h1:LlEzMj4AhA7rCAGe4KMBDvJI+AwstrUpVNzEA03Pprs=
@@ -23,6 +31,9 @@ github.com/golang/protobuf v1.4.0/go.mod h1:jodUvKwWbYaEsadDk5Fwe5c77LiNKVO9IDvq
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+golang.org/x/text v0.3.2 h1:tW2bmiBqwgJj/UpqtC8EpXEZVYOwU0yG4iWbprSVAcs=
+golang.org/x/text v0.3.2/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=
+golang.org/x/tools v0.0.0-20180917221912-90fa682c2a6e/go.mod h1:n7NCudcB/nEzxVGmLbDWY5pfWTLqBcC2KZ6jyYvM4mQ=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=

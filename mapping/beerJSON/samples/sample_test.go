@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/RossMerr/beerjson.go"
+	"github.com/beerproto/beerjson.go"
 	mapping "github.com/beerproto/tools/mapping/beerJSON"
 )
 
@@ -103,12 +103,11 @@ func TestSchemas_Generate(t *testing.T) {
 			}
 
 			beer := &beerjson.Beerjson{}
-			str :=  &struct {
+			str := &struct {
 				Beer *beerjson.Beerjson `json:"beerjson"`
 			}{
 				Beer: beer,
 			}
-
 
 			err = json.Unmarshal(data, &str)
 			if err != nil {
@@ -188,9 +187,7 @@ func TrimJson(data []byte) ([]byte, error) {
 	return results, err
 }
 
-
-
-func trimJson(x map[string]interface{}) (map[string]interface{}) {
+func trimJson(x map[string]interface{}) map[string]interface{} {
 	for key, value := range x {
 		switch v := value.(type) {
 		case string:
@@ -217,12 +214,12 @@ func trimJson(x map[string]interface{}) (map[string]interface{}) {
 				}
 			}
 		case map[string]interface{}:
-			 m := trimJson(v)
-			 if len(m) > 0 {
-				 x[key] = m
-			 } else {
-				 delete(x, key)
-			 }
+			m := trimJson(v)
+			if len(m) > 0 {
+				x[key] = m
+			} else {
+				delete(x, key)
+			}
 		}
 	}
 	return x

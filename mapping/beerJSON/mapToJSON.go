@@ -3,8 +3,8 @@ package beerJSON
 import (
 	"strings"
 
-	"github.com/RossMerr/beerjson.go"
-	"github.com/beerproto/tools/beerproto"
+	"github.com/beerproto/beerjson.go"
+	"github.com/beerproto/beerproto.go"
 )
 
 func MapToJSON(i *beerproto.Recipe) *beerjson.Beerjson {
@@ -72,7 +72,6 @@ func MapToJSON(i *beerproto.Recipe) *beerjson.Beerjson {
 	for _, profile := range i.Profiles {
 		output.Profiles = append(output.Profiles, *ToJSONWaterBase(profile))
 	}
-
 
 	return output
 }
@@ -1199,7 +1198,7 @@ func ToJSONPercentType(i *beerproto.PercentType) *beerjson.PercentType {
 
 	return &beerjson.PercentType{
 		Value: i.Value,
-		Unit: ToJSONPercentUnitType(i.Unit),
+		Unit:  ToJSONPercentUnitType(i.Unit),
 	}
 }
 
@@ -1225,7 +1224,7 @@ func ToJSONMashProcedureType(i *beerproto.MashProcedureType) *beerjson.MashProce
 		Name:             i.Name,
 		Notes:            &i.Notes,
 		GrainTemperature: *ToJSONTemperatureType(i.GrainTemperature),
-		MashSteps: mashSteps,
+		MashSteps:        mashSteps,
 	}
 }
 

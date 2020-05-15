@@ -12,9 +12,8 @@ import (
 	"strconv"
 	"testing"
 
-	beerXML "github.com/RossMerr/beerxml.go"
-	"github.com/RossMerr/beerxml.go/handlers"
-	"github.com/RossMerr/beerxml.go/reader"
+	"github.com/beerproto/beerxml.go/handlers"
+	"github.com/beerproto/beerxml.go/reader"
 )
 
 func TestSchemas_Generate(t *testing.T) {
@@ -42,10 +41,6 @@ func TestSchemas_Generate(t *testing.T) {
 			recipes := &beerXML.RECIPES{}
 
 			handlers.BeerXML(w, req, recipes)
-
-
-
-
 
 			buf := bytes.Buffer{}
 			encoder := xml.NewEncoder(&buf)
@@ -129,7 +124,7 @@ func walk(nodes []*Node) map[string]interface{} {
 				m[n.XMLName.Local] = f
 			} else if f, err := strconv.ParseFloat(str, 32); err == nil {
 				m[n.XMLName.Local] = f
-			} else if  f, err := strconv.ParseBool(str); err == nil {
+			} else if f, err := strconv.ParseBool(str); err == nil {
 				m[n.XMLName.Local] = f
 			} else {
 				m[n.XMLName.Local] = html.UnescapeString(str)

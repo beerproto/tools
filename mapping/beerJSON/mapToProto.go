@@ -3,8 +3,8 @@ package beerJSON
 import (
 	"strings"
 
-	"github.com/RossMerr/beerjson.go"
-	"github.com/beerproto/tools/beerproto"
+	"github.com/beerproto/beerjson.go"
+	"github.com/beerproto/beerproto.go"
 )
 
 func MapToProto(i *beerjson.Beerjson) *beerproto.Recipe {
@@ -707,7 +707,7 @@ func ToProtoCarbonationType(i *beerjson.CarbonationType) *beerproto.CarbonationT
 	}
 }
 
-func 	ToProtoIngredientsType(i *beerjson.IngredientsType) *beerproto.IngredientsType {
+func ToProtoIngredientsType(i *beerjson.IngredientsType) *beerproto.IngredientsType {
 	if i == nil {
 		return nil
 	}
@@ -1192,7 +1192,7 @@ func ToProtoMashProcedureType(i *beerjson.MashProcedureType) *beerproto.MashProc
 		Name:             i.Name,
 		Notes:            UseString(i.Notes),
 		GrainTemperature: ToProtoTemperatureType(&i.GrainTemperature),
-		MashSteps: mashSteps,
+		MashSteps:        mashSteps,
 	}
 }
 
@@ -1324,7 +1324,6 @@ func UseString(s *string) string {
 	return *s
 }
 
-
 func UseFloat(s *float64) float64 {
 	if s == nil {
 		return 0
@@ -1345,4 +1344,3 @@ func UseInt(s *int32) int32 {
 	}
 	return *s
 }
-
