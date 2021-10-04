@@ -20,6 +20,8 @@ github.com/beerproto/beerproto_go v1.76.1-0.20211002173934-657eca217ef2 h1:02ayy
 github.com/beerproto/beerproto_go v1.76.1-0.20211002173934-657eca217ef2/go.mod h1:mPgmuYDvMrbvgsdgn688KdA7ZH5IoVfdIxPbua9n4Ck=
 github.com/beerproto/beerproto_go v1.77.1-0.20211002174931-aafe562719db h1:3H7bwd/yAZMxIVOEOJJDSyS9xGrdL2lULyArPeBBT/0=
 github.com/beerproto/beerproto_go v1.77.1-0.20211002174931-aafe562719db/go.mod h1:mPgmuYDvMrbvgsdgn688KdA7ZH5IoVfdIxPbua9n4Ck=
+github.com/beerproto/beerproto_go v1.78.1-0.20211003144926-6f474b00cb58 h1:6KORXPsvc622UeRmwvbgFqanl7gqaFArffsmK5+k4gk=
+github.com/beerproto/beerproto_go v1.78.1-0.20211003144926-6f474b00cb58/go.mod h1:mPgmuYDvMrbvgsdgn688KdA7ZH5IoVfdIxPbua9n4Ck=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

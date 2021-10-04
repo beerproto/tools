@@ -3,7 +3,7 @@ module github.com/beerproto/tools
 go 1.17
 
 require (
-	github.com/beerproto/beerproto_go v1.77.1-0.20211002174931-aafe562719db
+	github.com/beerproto/beerproto_go v1.78.1-0.20211003144926-6f474b00cb58
 	github.com/gocolly/colly/v2 v2.1.0
 )
 

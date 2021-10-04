@@ -1,4 +1,4 @@
-package agraria
+package scraper
 
 import "testing"
 

@@ -1,4 +1,4 @@
-package agraria
+package scraper
 
 import (
 	"fmt"
@@ -8,21 +8,16 @@ import (
 	"github.com/beerproto/beerproto_go/fermentables"
 	colly "github.com/gocolly/colly/v2"
 	"golang.org/x/text/language"
-	"google.golang.org/protobuf/encoding/protojson"
 	"tawesoft.co.uk/go/lxstrconv"
 )
 
-func Agraria() {
+func Agraria() []*fermentables.GrainType {
+	grains := []*fermentables.GrainType{}
+
 	portuguese := lxstrconv.NewDecimalFormat(language.Portuguese)
 
 	c := colly.NewCollector()
 	page := colly.NewCollector()
-
-	//.conteudo .aos-init table
-	// page.OnHTML(".conteudo table", func(e *colly.HTMLElement) {
-	// 	// url := fmt.Sprintf("http://%s/en/%s", e.Request.URL.Host, e.Attr("href"))
-	// 	fmt.Printf(e.Name)
-	// })
 
 	page.OnHTML("body", func(e *colly.HTMLElement) {
 		grain := &fermentables.GrainType{
@@ -70,7 +65,6 @@ func Agraria() {
 		})
 
 		e.ForEach(".conteudo table tr", func(_ int, el *colly.HTMLElement) {
-
 			switch strings.TrimSpace(el.ChildText("th:first-child")) {
 			case "Humidity":
 				grain.Moisture = &beerproto.PercentRangeType{}
@@ -86,7 +80,6 @@ func Agraria() {
 						Unit:  beerproto.PercentType_PERCENT_SIGN,
 					}
 				}
-
 			case "Extract from fine grinding w.f.*":
 				grain.FineGrind = &beerproto.PercentRangeType{}
 				if min, err := portuguese.ParseFloat(el.ChildText("td:nth-child(2)")); err == nil {
@@ -214,21 +207,9 @@ func Agraria() {
 					}
 				}
 			}
-
 		})
 
-		mops := &protojson.MarshalOptions{}
-		b, _ := mops.Marshal(grain)
-		fmt.Println(string(b))
-		//out, err := proto.Marshal(grain)
-
-		//		jsonpb.Marshaler.
-		//unmarshalDoc(grain)
-
-	})
-
-	page.OnRequest(func(r *colly.Request) {
-		//		fmt.Println("page", r.URL)
+		grains = append(grains, grain)
 	})
 
 	c.OnHTML(".areas a[href]", func(e *colly.HTMLElement) {
@@ -236,11 +217,7 @@ func Agraria() {
 		page.Visit(url)
 	})
 
-	c.OnRequest(func(r *colly.Request) {
-		//	fmt.Println("Visiting", r.URL)
-	})
+	c.Visit("http://www.agraria.com.br/en/malt/products")
 
-	//c.Visit("http://www.agraria.com.br/en/malt/products")
-
-	page.Visit("http://www.agraria.com.br/en/malt/product/pilsen")
+	return grains
 }
