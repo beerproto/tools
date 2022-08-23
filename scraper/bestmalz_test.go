@@ -1,20 +1,19 @@
-package main
+package scraper
 
 import (
 	"os"
 	"path/filepath"
+	"testing"
 
 	"github.com/beerproto/beerproto_go/fermentables"
-	"github.com/beerproto/tools/scraper"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-func main() {
+func TestBestmalz_Parse(t *testing.T) {
 	list := &fermentables.GrainsType{
 		Grains: []*fermentables.GrainType{},
 	}
-	list.Grains = append(list.Grains, scraper.Agraria()...)
-	list.Grains = append(list.Grains, scraper.NewAtelierDoMalte().Parse()...)
+	list.Grains = append(list.Grains, NewBestmalz().Parse()...)
 
 	mops := &protojson.MarshalOptions{}
 	b, _ := mops.Marshal(list)

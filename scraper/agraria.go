@@ -51,7 +51,7 @@ func Agraria() []*fermentables.GrainType {
 				}
 
 				if strings.TrimSpace(el.ChildText("tbody tr:nth-child(4) th")) == "Quantity:" {
-					p := strings.TrimLeft(strings.ToLower(el.ChildText("tbody tr:nth-child(5) th")), "up to ")
+					p := strings.TrimLeft(strings.ToLower(el.ChildText("tbody tr:nth-child(5) th")), "up to")
 					percent := strings.TrimRight(p, "%")
 					if v, err := portuguese.ParseFloat(percent); err == nil {
 						grain.Maximum = &beerproto.PercentType{

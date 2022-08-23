@@ -22,6 +22,12 @@ github.com/beerproto/beerproto_go v1.77.1-0.20211002174931-aafe562719db h1:3H7bw
 github.com/beerproto/beerproto_go v1.77.1-0.20211002174931-aafe562719db/go.mod h1:mPgmuYDvMrbvgsdgn688KdA7ZH5IoVfdIxPbua9n4Ck=
 github.com/beerproto/beerproto_go v1.78.1-0.20211003144926-6f474b00cb58 h1:6KORXPsvc622UeRmwvbgFqanl7gqaFArffsmK5+k4gk=
 github.com/beerproto/beerproto_go v1.78.1-0.20211003144926-6f474b00cb58/go.mod h1:mPgmuYDvMrbvgsdgn688KdA7ZH5IoVfdIxPbua9n4Ck=
+github.com/beerproto/beerproto_go v1.79.1-0.20211017193859-252467ea111e h1:XkbimzMiFVHYYRgBlLyGjR2aY6hhzQ3YACediwC4kN4=
+github.com/beerproto/beerproto_go v1.79.1-0.20211017193859-252467ea111e/go.mod h1:mPgmuYDvMrbvgsdgn688KdA7ZH5IoVfdIxPbua9n4Ck=
+github.com/beerproto/beerproto_go v1.80.1-0.20211017204507-7dfd466fd792 h1:nxFSnf9j6cKxNIIypE5nvWSAkoD0nhy3qOr9Fy0yfUE=
+github.com/beerproto/beerproto_go v1.80.1-0.20211017204507-7dfd466fd792/go.mod h1:mPgmuYDvMrbvgsdgn688KdA7ZH5IoVfdIxPbua9n4Ck=
+github.com/beerproto/beerproto_go v1.81.1-0.20211018160333-eb5c6b75b61c h1:qbD6hEUcd1d1aCmsNqF9f/u++jCePMZTLmnuo0JMshg=
+github.com/beerproto/beerproto_go v1.81.1-0.20211018160333-eb5c6b75b61c/go.mod h1:mPgmuYDvMrbvgsdgn688KdA7ZH5IoVfdIxPbua9n4Ck=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -59,6 +65,8 @@ github.com/google/go-cmp v0.5.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/jawher/mow.cli v1.1.0/go.mod h1:aNaQlc7ozF3vw6IJ2dHjp2ZFiA4ozMIYY6PyuRJwlUg=
 github.com/kennygrant/sanitize v1.2.4 h1:gN25/otpP5vAsO2djbMhF/LQX6R7+O1TB4yv8NzpJ3o=
 github.com/kennygrant/sanitize v1.2.4/go.mod h1:LGsjYYtgxbetdg5owWB2mpgUL6e2nfw2eObZ0u0qvak=
+github.com/ledongthuc/pdf v0.0.0-20210621053716-e28cb8259002 h1:9KI9JpkbCm0b/xSjvNyg9O7G27t+cf+L3um6xv1IbNs=
+github.com/ledongthuc/pdf v0.0.0-20210621053716-e28cb8259002/go.mod h1:imJHygn/1yfhB7XSJJKlFZKl/J+dCPAknuiaGOshXAs=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
