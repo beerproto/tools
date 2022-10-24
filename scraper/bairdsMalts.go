@@ -41,6 +41,8 @@ func (s *BairdsMalts) Parse() []*fermentables.GrainType {
 				return
 			}
 
+			text := strings.ToLower(strings.TrimSpace(el.Text[index+1:]))
+
 			switch strings.ToLower(strings.TrimSpace(el.Text[:index])) {
 			case "moisture":
 				grain.Moisture = s.percent(el.Text, index)
@@ -53,7 +55,7 @@ func (s *BairdsMalts) Parse() []*fermentables.GrainType {
 			case "snr / ki/ st ratio":
 				grain.KolbachIndex = s.percent(el.Text, index)
 			case "diastatic power":
-				grain.DiastaticPower = s.diastaticPower(el.Text, index)
+				grain.DiastaticPower = diastaticPower(text, s.formater, beerproto.DiastaticPowerUnitType_LINTNER)
 			}
 		})
 
@@ -92,55 +94,55 @@ func (s *BairdsMalts) Parse() []*fermentables.GrainType {
 	return grains
 }
 
-func (s *BairdsMalts) time(value string, index int) *beerproto.TimeRangeType {
-	right := strings.ToLower(strings.TrimSpace(value[index+1:]))
-	dash := strings.Index(right, "-")
+// func (s *BairdsMalts) time(value string, index int) *beerproto.TimeRangeType {
+// 	right := strings.ToLower(strings.TrimSpace(value[index+1:]))
+// 	dash := strings.Index(right, "-")
 
-	if dash > 0 {
-		right = strings.TrimSpace(right[dash+1:])
-	}
-	max := strings.TrimRight(strings.TrimLeft(strings.TrimLeft(right, "max"), "approx"), "min")
-	time := &beerproto.TimeRangeType{}
-	if max, err := s.formater.ParseInt(max); err == nil {
-		time.Maximum = &beerproto.TimeType{
-			Value: max,
-			Unit:  beerproto.TimeType_MIN,
-		}
-	}
+// 	if dash > 0 {
+// 		right = strings.TrimSpace(right[dash+1:])
+// 	}
+// 	max := strings.TrimRight(strings.TrimLeft(strings.TrimLeft(right, "max"), "approx"), "min")
+// 	time := &beerproto.TimeRangeType{}
+// 	if max, err := s.formater.ParseInt(max); err == nil {
+// 		time.Maximum = &beerproto.TimeType{
+// 			Value: max,
+// 			Unit:  beerproto.TimeType_MIN,
+// 		}
+// 	}
 
-	return time
-}
+// 	return time
+// }
 
-func (s *BairdsMalts) viscosity(value string, index int) *beerproto.ViscosityRangeType {
-	right := strings.ToLower(strings.TrimSpace(value[index+1:]))
+// func (s *BairdsMalts) viscosity(value string, index int) *beerproto.ViscosityRangeType {
+// 	right := strings.ToLower(strings.TrimSpace(value[index+1:]))
 
-	viscosity := &beerproto.ViscosityRangeType{}
+// 	viscosity := &beerproto.ViscosityRangeType{}
 
-	min := strings.TrimRight(strings.TrimLeft(strings.TrimLeft(right, "mix"), "."), "cp")
-	if min, err := s.formater.ParseFloat(min); err == nil {
-		viscosity.Minimum = &beerproto.ViscosityType{
-			Value: min,
-			Unit:  beerproto.ViscosityUnitType_CP,
-		}
-	}
+// 	min := strings.TrimRight(strings.TrimLeft(strings.TrimLeft(right, "mix"), "."), "cp")
+// 	if min, err := s.formater.ParseFloat(min); err == nil {
+// 		viscosity.Minimum = &beerproto.ViscosityType{
+// 			Value: min,
+// 			Unit:  beerproto.ViscosityUnitType_CP,
+// 		}
+// 	}
 
-	return viscosity
-}
-func (s *BairdsMalts) diastaticPower(value string, index int) *beerproto.DiastaticPowerRangeType {
-	right := strings.ToLower(strings.TrimSpace(value[index+1:]))
+//		return viscosity
+//	}
+// func (s *BairdsMalts) diastaticPower(value string, index int) *beerproto.DiastaticPowerRangeType {
+// 	right := strings.ToLower(strings.TrimSpace(value[index+1:]))
 
-	diastaticPower := &beerproto.DiastaticPowerRangeType{}
+// 	diastaticPower := &beerproto.DiastaticPowerRangeType{}
 
-	min := strings.TrimRight(strings.TrimSpace(strings.TrimRight(right, "min")), "wk")
-	if min, err := s.formater.ParseFloat(min); err == nil {
-		diastaticPower.Minimum = &beerproto.DiastaticPowerType{
-			Value: min,
-			Unit:  beerproto.DiastaticPowerUnitType_WK,
-		}
-	}
+// 	min := strings.TrimRight(strings.TrimSpace(strings.TrimRight(right, "min")), "wk")
+// 	if min, err := s.formater.ParseFloat(min); err == nil {
+// 		diastaticPower.Minimum = &beerproto.DiastaticPowerType{
+// 			Value: min,
+// 			Unit:  beerproto.DiastaticPowerUnitType_WK,
+// 		}
+// 	}
 
-	return diastaticPower
-}
+// 	return diastaticPower
+// }
 
 func (s *BairdsMalts) concentration(value string, index int) *beerproto.ConcentrationRangeType {
 	right := strings.ToLower(strings.TrimSpace(value[index+1:]))

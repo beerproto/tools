@@ -39,20 +39,61 @@ func time(value string, formater lxstrconv.NumberFormat) *beerproto.TimeRangeTyp
 	return time
 }
 
-func diastaticPower(value string, formater lxstrconv.NumberFormat) *beerproto.DiastaticPowerRangeType {
-	right := strings.ToLower(strings.TrimSpace(value))
-
-	time := &beerproto.DiastaticPowerRangeType{}
-
-	min := TrimRight(TrimLeft(right, []string{"min"}), []string{""})
-	if min, err := formater.ParseFloat(min); err == nil {
-		time.Minimum = &beerproto.DiastaticPowerType{
-			Value: min,
-			Unit:  beerproto.DiastaticPowerUnitType_WK,
-		}
+func diastaticPower(value string, formater lxstrconv.NumberFormat, unit beerproto.DiastaticPowerUnitType) (diastaticPower *beerproto.DiastaticPowerRangeType) {
+	diastaticPower = &beerproto.DiastaticPowerRangeType{}
+	value = strings.ToLower(strings.TrimSpace(value))
+	length := len(value)
+	if length == 0 {
+		return
 	}
 
-	return time
+	arr := Split(value, []string{"–", "-"})
+
+	if len(arr) == 0 {
+		arr = []string{value}
+	}
+
+	if ok := Contains(arr[0], []string{"min"}); ok {
+		min := TrimAny(arr[0], []string{"min", "wk"})
+		if min, err := formater.ParseFloat(min); err == nil {
+			diastaticPower.Minimum = &beerproto.DiastaticPowerType{
+				Value: min,
+				Unit:  unit,
+			}
+		}
+
+	} else if ok = Contains(arr[0], []string{"max"}); ok {
+		max := TrimAny(arr[0], []string{"max", "wk"})
+		if max, err := formater.ParseFloat(max); err == nil {
+			diastaticPower.Maximum = &beerproto.DiastaticPowerType{
+				Value: max,
+				Unit:  unit,
+			}
+		}
+
+	} else {
+		min := TrimAny(arr[0], []string{"min", "wk"})
+		if min, err := formater.ParseFloat(min); err == nil {
+			diastaticPower.Minimum = &beerproto.DiastaticPowerType{
+				Value: min,
+				Unit:  unit,
+			}
+		}
+
+	}
+
+	if len(arr) == 2 {
+		max := TrimAny(arr[0], []string{"max", "wk"})
+		if max, err := formater.ParseFloat(max); err == nil {
+			diastaticPower.Maximum = &beerproto.DiastaticPowerType{
+				Value: max,
+				Unit:  unit,
+			}
+		}
+
+	}
+
+	return
 }
 
 func concentration(value string, formater lxstrconv.NumberFormat, unit beerproto.ConcentrationUnitType) (concentration *beerproto.ConcentrationRangeType) {
@@ -114,8 +155,6 @@ func concentration(value string, formater lxstrconv.NumberFormat, unit beerproto
 		}
 	}
 	return
-
-	return concentration
 }
 
 func color(value string, formater lxstrconv.NumberFormat, unit beerproto.ColorUnitType) (color *beerproto.ColorRangeType) {
@@ -133,73 +172,56 @@ func color(value string, formater lxstrconv.NumberFormat, unit beerproto.ColorUn
 		arr = []string{value}
 	}
 
-	ok := false
-	min := ""
-	max := ""
-
-	if ok, min, arr = StartsWithArray(arr, []string{"min"}); ok {
+	if ok := Contains(arr[0], []string{"min"}); ok {
+		min := TrimAny(arr[0], []string{"min", "°ebc"})
 		if min, err := formater.ParseFloat(min); err == nil {
 			color.Minimum = &beerproto.ColorType{
 				Value: min,
 				Unit:  unit,
 			}
 		}
-	}
 
-	if ok, max, arr = StartsWithArray(arr, []string{"max"}); ok {
+	} else if ok = Contains(arr[0], []string{"max"}); ok {
+		max := TrimAny(arr[0], []string{"max", "°ebc"})
 		if max, err := formater.ParseFloat(max); err == nil {
 			color.Maximum = &beerproto.ColorType{
 				Value: max,
 				Unit:  unit,
 			}
-
-			return
 		}
 	}
-
-	if ok, min, arr = EndsWithArray(arr, []string{"°ebc"}); ok {
-		if min, err := formater.ParseFloat(min); err == nil {
-			color.Minimum = &beerproto.ColorType{
-				Value: min,
-				Unit:  beerproto.ColorUnitType_EBC,
-			}
-		}
-	}
-
-	if ok, min, arr = EndsWithArray(arr, []string{"°ebc"}); ok {
-		if max, err := formater.ParseFloat(min); err == nil {
+	if len(arr) == 1 {
+		max := TrimAny(arr[0], []string{"max", "°ebc"})
+		if max, err := formater.ParseFloat(max); err == nil {
 			color.Maximum = &beerproto.ColorType{
 				Value: max,
-				Unit:  beerproto.ColorUnitType_EBC,
+				Unit:  unit,
 			}
-
-			return
 		}
 	}
 
 	if len(arr) == 2 {
-		min = arr[0]
+		min := TrimAny(arr[0], []string{"min", "°ebc"})
 		if min, err := formater.ParseFloat(min); err == nil {
 			color.Minimum = &beerproto.ColorType{
 				Value: min,
 				Unit:  unit,
 			}
 		}
-		arr = arr[1:]
-	}
-	if len(arr) == 1 {
-		max = arr[0]
+		max := TrimAny(arr[1], []string{"max", "°ebc"})
 		if max, err := formater.ParseFloat(max); err == nil {
 			color.Maximum = &beerproto.ColorType{
 				Value: max,
 				Unit:  unit,
 			}
 		}
+
 	}
+
 	return
 }
 
-func percent(value string, formater lxstrconv.NumberFormat) (percent *beerproto.PercentRangeType) {
+func percent(value string, formater lxstrconv.NumberFormat, unit beerproto.PercentType_PercentUnitType) (percent *beerproto.PercentRangeType) {
 	percent = &beerproto.PercentRangeType{}
 
 	value = strings.ToLower(strings.TrimSpace(value))
@@ -214,83 +236,47 @@ func percent(value string, formater lxstrconv.NumberFormat) (percent *beerproto.
 		arr = []string{value}
 	}
 
-	ok := false
-	min := ""
-	max := ""
-
-	if ok, min, arr = StartsWithArray(arr, []string{"min"}); ok {
+	if ok := Contains(arr[0], []string{"min"}); ok {
+		min := TrimAny(arr[0], []string{"min", "%"})
 		if min, err := formater.ParseFloat(min); err == nil {
 			percent.Minimum = &beerproto.PercentType{
 				Value: min,
-				Unit:  beerproto.PercentType_PERCENT_SIGN,
+				Unit:  unit,
 			}
 		}
-	}
-
-	if ok, max, arr = StartsWithArray(arr, []string{"max"}); ok {
+	} else if ok = Contains(arr[0], []string{"max"}); ok {
+		max := TrimAny(arr[0], []string{"max", "%"})
 		if max, err := formater.ParseFloat(max); err == nil {
 			percent.Maximum = &beerproto.PercentType{
 				Value: max,
-				Unit:  beerproto.PercentType_PERCENT_SIGN,
+				Unit:  unit,
 			}
-
-			return
 		}
+
+	} else {
+		max := TrimAny(arr[0], []string{"%"})
+		if max, err := formater.ParseFloat(max); err == nil {
+			percent.Maximum = &beerproto.PercentType{
+				Value: max,
+				Unit:  unit,
+			}
+		}
+
 	}
 
 	if len(arr) == 2 {
-		min = arr[0]
-		if min, err := formater.ParseFloat(min); err == nil {
-			percent.Minimum = &beerproto.PercentType{
-				Value: min,
-				Unit:  beerproto.PercentType_PERCENT_SIGN,
-			}
-		}
-		arr = arr[1:]
-	}
-	if len(arr) == 1 {
-		max = arr[0]
-		_, max = StartsWith(max, []string{"%"})
+		max := TrimAny(arr[1], []string{"max", "%"})
 		if max, err := formater.ParseFloat(max); err == nil {
 			percent.Maximum = &beerproto.PercentType{
 				Value: max,
-				Unit:  beerproto.PercentType_PERCENT_SIGN,
+				Unit:  unit,
 			}
 		}
+
 	}
+
 	return
 }
-
-// func percent(value string, formater lxstrconv.NumberFormat) (percent *beerproto.PercentRangeType) {
-// 	percent = &beerproto.PercentRangeType{}
-// 	right := strings.ToLower(strings.TrimSpace(value))
-
-// 	if len(right) == 0 {
-// 		return
-// 	}
-
-// 	if strings.HasSuffix(right, "max") || strings.HasPrefix(right, "max") {
-// 		max := TrimRight(TrimLeft(right, []string{"max"}), []string{"%"})
-// 		if max, err := formater.ParseFloat(max); err == nil {
-// 			percent.Maximum = &beerproto.PercentType{
-// 				Value: max,
-// 				Unit:  beerproto.PercentType_PERCENT_SIGN,
-// 			}
-// 		}
-// 	}
-
-// 	if strings.HasSuffix(right, "min") || strings.HasPrefix(right, "min") {
-// 		min := TrimRight(TrimLeft(right, []string{"min"}), []string{"%"})
-// 		if min, err := formater.ParseFloat(min); err == nil {
-// 			percent.Minimum = &beerproto.PercentType{
-// 				Value: min,
-// 				Unit:  beerproto.PercentType_PERCENT_SIGN,
-// 			}
-// 		}
-// 	}
-
-// 	return
-// }
 
 func viscosity(value string, formater lxstrconv.NumberFormat) *beerproto.ViscosityRangeType {
 	right := strings.ToLower(strings.TrimSpace(value))
@@ -361,22 +347,27 @@ func StartsWithArray(arr []string, cutset []string) (bool, string, []string) {
 
 func StartsWith(s string, cutset []string) (bool, string) {
 	s = strings.TrimSpace(s)
+	match := false
+
 	for _, l := range cutset {
 		if strings.HasPrefix(s, l) {
-			return true, strings.TrimPrefix(s, l)
+			s = strings.TrimSpace(strings.TrimSuffix(s, l))
+			match = true
 		}
 	}
-	return false, ""
+	return match, ""
 }
 
 func EndsWith(s string, cutset []string) (bool, string) {
 	s = strings.TrimSpace(s)
+	match := false
 	for _, l := range cutset {
 		if strings.HasSuffix(s, l) {
-			return true, strings.TrimSuffix(s, l)
+			s = strings.TrimSpace(strings.TrimSuffix(s, l))
+			match = true
 		}
 	}
-	return false, ""
+	return match, s
 }
 
 func EndsWithArray(arr []string, cutset []string) (bool, string, []string) {
@@ -386,4 +377,28 @@ func EndsWithArray(arr []string, cutset []string) (bool, string, []string) {
 		}
 	}
 	return false, "", arr
+}
+
+func Contains(s string, cutset []string) bool {
+	s = strings.TrimSpace(s)
+	words := strings.Split(s, " ")
+	for _, l := range cutset {
+		for _, w := range words {
+			if l == w {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func TrimAny(s string, cutset []string) string {
+	s = strings.TrimSpace(s)
+
+	for _, l := range cutset {
+		s = strings.ReplaceAll(s, l, "")
+	}
+
+	return strings.TrimSpace(s)
+
 }

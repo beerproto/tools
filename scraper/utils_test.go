@@ -128,8 +128,36 @@ func Test_percent(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.value, func(t *testing.T) {
-			if gotPercent := percent(tt.value, formater); !reflect.DeepEqual(gotPercent, tt.wantPercent) {
+			if gotPercent := percent(tt.value, formater, beerproto.PercentType_PERCENT_SIGN); !reflect.DeepEqual(gotPercent, tt.wantPercent) {
 				t.Errorf("percent() = %v, want %v", gotPercent, tt.wantPercent)
+			}
+		})
+	}
+}
+
+func Test_diastaticPower(t *testing.T) {
+	formater := lxstrconv.NewDecimalFormat(language.BritishEnglish)
+
+	tests := []struct {
+		value       string
+		wantPercent *beerproto.DiastaticPowerRangeType
+		unit        beerproto.DiastaticPowerUnitType
+	}{
+		{
+			value: "245 wk min",
+			wantPercent: &beerproto.DiastaticPowerRangeType{
+				Minimum: &beerproto.DiastaticPowerType{
+					Unit:  beerproto.DiastaticPowerUnitType_WK,
+					Value: 245,
+				},
+			},
+			unit: beerproto.DiastaticPowerUnitType_WK,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.value, func(t *testing.T) {
+			if gotPercent := diastaticPower(tt.value, formater, tt.unit); !reflect.DeepEqual(gotPercent, tt.wantPercent) {
+				t.Errorf("diastaticPower() = %v, want %v", gotPercent, tt.wantPercent)
 			}
 		})
 	}

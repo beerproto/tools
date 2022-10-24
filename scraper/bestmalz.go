@@ -43,23 +43,23 @@ func (s *Bestmalz) Parse() []*fermentables.GrainType {
 
 			switch strings.ToLower(strings.TrimSpace(spec)) {
 			case "moisture content":
-				grain.Moisture = percent(text, s.formater)
+				grain.Moisture = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
 			case "extract fine grind, dry basis":
 				//grain.Yield = percent(el.Text, s.formater)
 			case "fine-coarse difference ebc":
-				grain.CoarseGrind = percent(text, s.formater)
+				grain.CoarseGrind = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
 			case "viscosity (8.6%)":
 				grain.Viscosity = viscosity(text, s.formater)
 			case "friability":
-				grain.Friability = percent(text, s.formater)
+				grain.Friability = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
 			case "glassiness":
 			//	grain.gl = s.diastaticPower(el.Text, index)
 			case "protein, dry basis":
-				grain.Protein = percent(text, s.formater)
+				grain.Protein = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
 			case "soluble nitrogen":
 				grain.SolubleNitrogen = concentration(text, s.formater, beerproto.ConcentrationUnitType_MG100L)
 			case "kolbach index":
-				grain.KolbachIndex = percent(text, s.formater)
+				grain.KolbachIndex = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
 			case "wort color":
 				grain.Color = color(text, s.formater, beerproto.ColorUnitType_EBC)
 			case "wort ph":
@@ -67,7 +67,7 @@ func (s *Bestmalz) Parse() []*fermentables.GrainType {
 			case "grading > 2.5mm":
 			//	grain.gr = s.diastaticPower(el.Text, index)
 			case "diastatic power":
-				grain.DiastaticPower = diastaticPower(text, s.formater)
+				grain.DiastaticPower = diastaticPower(text, s.formater, beerproto.DiastaticPowerUnitType_WK)
 			}
 		})
 	})
