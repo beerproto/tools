@@ -39,63 +39,6 @@ func time(value string, formater lxstrconv.NumberFormat) *beerproto.TimeRangeTyp
 	return time
 }
 
-func diastaticPower(value string, formater lxstrconv.NumberFormat, unit beerproto.DiastaticPowerUnitType) (diastaticPower *beerproto.DiastaticPowerRangeType) {
-	diastaticPower = &beerproto.DiastaticPowerRangeType{}
-	value = strings.ToLower(strings.TrimSpace(value))
-	length := len(value)
-	if length == 0 {
-		return
-	}
-
-	arr := Split(value, []string{"–", "-"})
-
-	if len(arr) == 0 {
-		arr = []string{value}
-	}
-
-	if ok := Contains(arr[0], []string{"min"}); ok {
-		min := TrimAny(arr[0], []string{"min", "wk"})
-		if min, err := formater.ParseFloat(min); err == nil {
-			diastaticPower.Minimum = &beerproto.DiastaticPowerType{
-				Value: min,
-				Unit:  unit,
-			}
-		}
-
-	} else if ok = Contains(arr[0], []string{"max"}); ok {
-		max := TrimAny(arr[0], []string{"max", "wk"})
-		if max, err := formater.ParseFloat(max); err == nil {
-			diastaticPower.Maximum = &beerproto.DiastaticPowerType{
-				Value: max,
-				Unit:  unit,
-			}
-		}
-
-	} else {
-		min := TrimAny(arr[0], []string{"min", "wk"})
-		if min, err := formater.ParseFloat(min); err == nil {
-			diastaticPower.Minimum = &beerproto.DiastaticPowerType{
-				Value: min,
-				Unit:  unit,
-			}
-		}
-
-	}
-
-	if len(arr) == 2 {
-		max := TrimAny(arr[0], []string{"max", "wk"})
-		if max, err := formater.ParseFloat(max); err == nil {
-			diastaticPower.Maximum = &beerproto.DiastaticPowerType{
-				Value: max,
-				Unit:  unit,
-			}
-		}
-
-	}
-
-	return
-}
-
 func concentration(value string, formater lxstrconv.NumberFormat, unit beerproto.ConcentrationUnitType) (concentration *beerproto.ConcentrationRangeType) {
 	concentration = &beerproto.ConcentrationRangeType{}
 
