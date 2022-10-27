@@ -1,7 +1,6 @@
 package unit
 
 import (
-	beerproto "github.com/beerproto/beerproto_go"
 	"golang.org/x/exp/constraints"
 )
 
@@ -9,16 +8,16 @@ type Number interface {
 	constraints.Integer | constraints.Float
 }
 
-type RangeType[TUnit Unit, TNumber Number] struct {
-	Minimum UnitType[TUnit, TNumber]
-	Maximum UnitType[TUnit, TNumber]
+type RangeType[TUnit Unit] struct {
+	Minimum UnitType[TUnit]
+	Maximum UnitType[TUnit]
 }
 
-type UnitType[TUnit Unit, TNumber Number] struct {
-	Value TNumber
+type UnitType[TUnit Unit] struct {
+	Value float64
 	Unit  TUnit
 }
 
 type Unit interface {
-	beerproto.DiastaticPowerUnitType | beerproto.ColorUnitType
+	~int32
 }
