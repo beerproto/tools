@@ -1,6 +1,7 @@
 package unit
 
 import (
+	"reflect"
 	"testing"
 
 	beerproto "github.com/beerproto/beerproto_go"
@@ -14,7 +15,9 @@ func TestParse(t *testing.T) {
 		name      string
 		value     string
 		rangeType *RangeType[beerproto.DiastaticPowerUnitType]
-		options   []func(*Option[beerproto.DiastaticPowerUnitType])
+		want      *RangeType[beerproto.DiastaticPowerUnitType]
+
+		options []func(*Option[beerproto.DiastaticPowerUnitType])
 	}{
 		{
 			value: "245 wk min",
@@ -26,11 +29,20 @@ func TestParse(t *testing.T) {
 				WithMinTrim[beerproto.DiastaticPowerUnitType]([]string{"wk", "min"}),
 			},
 			rangeType: &RangeType[beerproto.DiastaticPowerUnitType]{},
+			want: &RangeType[beerproto.DiastaticPowerUnitType]{
+				Minimum: UnitType[beerproto.DiastaticPowerUnitType]{
+					Value: 245,
+					Unit:  beerproto.DiastaticPowerUnitType_WK,
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			Parse(tt.value, tt.rangeType, tt.options...)
+			if !reflect.DeepEqual(tt.rangeType, tt.want) {
+				t.Errorf("Parse() = %v, want %v", tt.rangeType, tt.want)
+			}
 		})
 	}
 }
