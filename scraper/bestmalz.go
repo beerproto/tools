@@ -6,6 +6,7 @@ import (
 
 	beerproto "github.com/beerproto/beerproto_go"
 	"github.com/beerproto/beerproto_go/fermentables"
+	"github.com/beerproto/tools/unit"
 	colly "github.com/gocolly/colly/v2"
 	"golang.org/x/text/language"
 	"tawesoft.co.uk/go/lxstrconv"
@@ -67,7 +68,7 @@ func (s *Bestmalz) Parse() []*fermentables.GrainType {
 			case "grading > 2.5mm":
 			//	grain.gr = s.diastaticPower(el.Text, index)
 			case "diastatic power":
-				grain.DiastaticPower = diastaticPower(text, s.formater, beerproto.DiastaticPowerUnitType_WK)
+				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formater))
 			}
 		})
 	})

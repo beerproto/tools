@@ -9,34 +9,29 @@ import (
 	"tawesoft.co.uk/go/lxstrconv"
 )
 
-func TestParse(t *testing.T) {
-
+func TestDiastaticPower(t *testing.T) {
 	tests := []struct {
-		name      string
-		value     string
-		rangeType *RangeType[beerproto.DiastaticPowerUnitType]
-		want      *RangeType[beerproto.DiastaticPowerUnitType]
-		options   OptionsFunc[beerproto.DiastaticPowerUnitType]
+		name               string
+		value              string
+		options            OptionsFunc[beerproto.DiastaticPowerUnitType]
+		wantDiastaticPower *beerproto.DiastaticPowerRangeType
 	}{
 		{
 			value: "245 wk min",
 			options: func(opts *Option[beerproto.DiastaticPowerUnitType]) {
 				opts.WithFormatter(lxstrconv.NewDecimalFormat(language.German)).WithMinContains([]string{"min"}).WithMinTrim([]string{"wk", "min"}).WithSplitter([]string{"–", "-"}).WithUnit(beerproto.DiastaticPowerUnitType_WK)
 			},
-			rangeType: &RangeType[beerproto.DiastaticPowerUnitType]{},
-			want: &RangeType[beerproto.DiastaticPowerUnitType]{
-				Minimum: &UnitType[beerproto.DiastaticPowerUnitType]{
+			wantDiastaticPower: &beerproto.DiastaticPowerRangeType{
+				Minimum: &beerproto.DiastaticPowerType{
 					Value: 245,
 					Unit:  beerproto.DiastaticPowerUnitType_WK,
 				},
 			},
-		},
-	}
+		}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			parse(tt.value, tt.rangeType, tt.options)
-			if !reflect.DeepEqual(tt.rangeType, tt.want) {
-				t.Errorf("parse() = %v, want %v", tt.rangeType, tt.want)
+			if gotDiastaticPower := DiastaticPower(tt.value, tt.options); !reflect.DeepEqual(gotDiastaticPower, tt.wantDiastaticPower) {
+				t.Errorf("DiastaticPower() = %v, want %v", gotDiastaticPower, tt.wantDiastaticPower)
 			}
 		})
 	}
