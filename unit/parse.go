@@ -20,6 +20,8 @@ type Option[TUnit Unit] struct {
 	defaultRange *Default
 }
 
+type OptionsFunc[TUnit Unit] func(opts *Option[TUnit])
+
 type Default int
 
 const (
@@ -27,41 +29,65 @@ const (
 	Max         = 1
 )
 
-func (s *Option[TUnit]) WithMinTrim(trime []string) *Option[TUnit] {
-	s.minTrim = trime
-	return s
+func WithMinTrim[TUnit Unit](trime []string) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		s.minTrim = trime
+	}
 }
 
-func (s *Option[TUnit]) WithMinContains(contains []string) *Option[TUnit] {
-	s.minContains = contains
-	return s
-
+func WithMinContains[TUnit Unit](contains []string) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		s.minContains = contains
+	}
 }
 
-func (s *Option[TUnit]) WithFormatter(formatter lxstrconv.NumberFormat) *Option[TUnit] {
-	s.formatter = formatter
-	return s
-
+func WithMaxTrim[TUnit Unit](trime []string) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		s.maxTrim = trime
+	}
 }
 
-func (s *Option[TUnit]) WithUnit(unit TUnit) *Option[TUnit] {
-	s.unit = unit
-	return s
-
+func WithMaxContains[TUnit Unit](contains []string) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		s.maxContains = contains
+	}
 }
 
-func (s *Option[TUnit]) WithSplitter(splitter []string) *Option[TUnit] {
-	s.splitter = splitter
-	return s
-
+func WithFormatter[TUnit Unit](formatter lxstrconv.NumberFormat) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		s.formatter = formatter
+	}
 }
 
-type OptionsFunc[TUnit Unit] func(opts *Option[TUnit])
+func WithUnit[TUnit Unit](unit TUnit) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		s.unit = unit
+	}
+}
 
-func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options OptionsFunc[TUnit]) {
+func WithSplitter[TUnit Unit](splitter []string) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		if s.splitter == nil {
+			s.splitter = splitter
+		}
+	}
+}
+
+func WithDefault[TUnit Unit](defaultRange Default) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		if s.defaultRange == nil {
+			s.defaultRange = &defaultRange
+		}
+	}
+}
+
+func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...OptionsFunc[TUnit]) {
+	options = append(options,
+		WithSplitter[TUnit]([]string{"–", "-"}),
+	)
 	opts := &Option[TUnit]{}
-	if options != nil {
-		options(opts)
+	for _, opt := range options {
+		opt(opts)
 	}
 
 	value = strings.ToLower(strings.TrimSpace(value))
@@ -114,6 +140,27 @@ func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options Option
 		}
 	}
 
+	if len(arr) == 2 {
+		min := ""
+		if opts.minTrim != nil {
+			min = utils.TrimAny(arr[0], opts.minTrim)
+		}
+		if ok, unit := unit(min, opts); ok {
+			found = true
+			rangeType.Minimum = unit
+		}
+
+		max := ""
+		if opts.maxTrim != nil {
+			max = utils.TrimAny(arr[1], opts.maxTrim)
+		}
+		if ok, unit := unit(max, opts); ok {
+			found = true
+			rangeType.Maximum = unit
+		}
+
+		return
+	}
 	if opts.defaultRange != nil && !found {
 		switch *opts.defaultRange {
 		case Min:
