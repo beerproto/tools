@@ -14,8 +14,8 @@ func TestParse(t *testing.T) {
 	tests := []struct {
 		name      string
 		value     string
-		rangeType *RangeType[beerproto.DiastaticPowerUnitType]
-		want      *RangeType[beerproto.DiastaticPowerUnitType]
+		rangeType *RangeType[beerproto.DiastaticPowerUnitType, float64]
+		want      *RangeType[beerproto.DiastaticPowerUnitType, float64]
 		options   []OptionsFunc[beerproto.DiastaticPowerUnitType]
 	}{
 		{
@@ -26,9 +26,9 @@ func TestParse(t *testing.T) {
 				WithMinTrim[beerproto.DiastaticPowerUnitType]([]string{"wk", "min"}),
 				WithUnit(beerproto.DiastaticPowerUnitType_WK),
 			},
-			rangeType: &RangeType[beerproto.DiastaticPowerUnitType]{},
-			want: &RangeType[beerproto.DiastaticPowerUnitType]{
-				Minimum: &UnitType[beerproto.DiastaticPowerUnitType]{
+			rangeType: &RangeType[beerproto.DiastaticPowerUnitType, float64]{},
+			want: &RangeType[beerproto.DiastaticPowerUnitType, float64]{
+				Minimum: &UnitType[beerproto.DiastaticPowerUnitType, float64]{
 					Value: 245,
 					Unit:  beerproto.DiastaticPowerUnitType_WK,
 				},

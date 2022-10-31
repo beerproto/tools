@@ -1,15 +1,19 @@
 package unit
 
-type RangeType[TUnit Unit] struct {
-	Minimum *UnitType[TUnit]
-	Maximum *UnitType[TUnit]
+type RangeType[TUnit Unit, TValue Value] struct {
+	Minimum *UnitType[TUnit, TValue]
+	Maximum *UnitType[TUnit, TValue]
 }
 
-type UnitType[TUnit Unit] struct {
-	Value float64
+type UnitType[TUnit Unit, TValue Value] struct {
+	Value TValue
 	Unit  TUnit
 }
 
 type Unit interface {
 	~int32
+}
+
+type Value interface {
+	~float64 | ~int64
 }

@@ -9,7 +9,7 @@ import (
 
 type Option[TUnit Unit] struct {
 	formatter   lxstrconv.NumberFormat
-	unit        TUnit
+	unit        *TUnit
 	splitter    []string
 	minContains []string
 	minTrim     []string
@@ -31,37 +31,49 @@ const (
 
 func WithMinTrim[TUnit Unit](trime []string) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
-		s.minTrim = trime
+		if s.minTrim == nil {
+			s.minTrim = trime
+		}
 	}
 }
 
 func WithMinContains[TUnit Unit](contains []string) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
-		s.minContains = contains
+		if s.minContains == nil {
+			s.minContains = contains
+		}
 	}
 }
 
 func WithMaxTrim[TUnit Unit](trime []string) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
-		s.maxTrim = trime
+		if s.maxTrim == nil {
+			s.maxTrim = trime
+		}
 	}
 }
 
 func WithMaxContains[TUnit Unit](contains []string) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
-		s.maxContains = contains
+		if s.maxContains == nil {
+			s.maxContains = contains
+		}
 	}
 }
 
 func WithFormatter[TUnit Unit](formatter lxstrconv.NumberFormat) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
-		s.formatter = formatter
+		if s.formatter == nil {
+			s.formatter = formatter
+		}
 	}
 }
 
 func WithUnit[TUnit Unit](unit TUnit) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
-		s.unit = unit
+		if s.unit == nil {
+			s.unit = &unit
+		}
 	}
 }
 
@@ -81,7 +93,7 @@ func WithDefault[TUnit Unit](defaultRange Default) OptionsFunc[TUnit] {
 	}
 }
 
-func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...OptionsFunc[TUnit]) {
+func parse[TUnit Unit, TValue Value](value string, rangeType *RangeType[TUnit, TValue], options ...OptionsFunc[TUnit]) {
 	options = append(options,
 		WithSplitter[TUnit]([]string{"–", "-"}),
 	)
@@ -115,7 +127,7 @@ func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...Opt
 				if opts.minTrim != nil {
 					min = utils.TrimAny(s, opts.minTrim)
 				}
-				if ok, unit := unit(min, opts); ok {
+				if ok, unit := unit[TUnit, TValue](min, opts); ok {
 					found = true
 					rangeType.Minimum = unit
 					break
@@ -131,7 +143,7 @@ func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...Opt
 				if opts.maxTrim != nil {
 					max = utils.TrimAny(s, opts.maxTrim)
 				}
-				if ok, unit := unit(max, opts); ok {
+				if ok, unit := unit[TUnit, TValue](max, opts); ok {
 					found = true
 					rangeType.Maximum = unit
 					break
@@ -145,7 +157,7 @@ func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...Opt
 		if opts.minTrim != nil {
 			min = utils.TrimAny(arr[0], opts.minTrim)
 		}
-		if ok, unit := unit(min, opts); ok {
+		if ok, unit := unit[TUnit, TValue](min, opts); ok {
 			found = true
 			rangeType.Minimum = unit
 		}
@@ -154,7 +166,7 @@ func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...Opt
 		if opts.maxTrim != nil {
 			max = utils.TrimAny(arr[1], opts.maxTrim)
 		}
-		if ok, unit := unit(max, opts); ok {
+		if ok, unit := unit[TUnit, TValue](max, opts); ok {
 			found = true
 			rangeType.Maximum = unit
 		}
@@ -166,7 +178,7 @@ func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...Opt
 		case Min:
 			if opts.minTrim != nil {
 				min := utils.TrimAny(arr[0], opts.minTrim)
-				if ok, unit := unit(min, opts); ok {
+				if ok, unit := unit[TUnit, TValue](min, opts); ok {
 					rangeType.Minimum = unit
 					return
 				}
@@ -174,7 +186,7 @@ func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...Opt
 		case Max:
 			if opts.maxTrim != nil {
 				max := utils.TrimAny(arr[0], opts.maxTrim)
-				if ok, unit := unit(max, opts); ok {
+				if ok, unit := unit[TUnit, TValue](max, opts); ok {
 					rangeType.Maximum = unit
 					return
 				}
@@ -183,13 +195,28 @@ func parse[TUnit Unit](value string, rangeType *RangeType[TUnit], options ...Opt
 	}
 }
 
-func unit[TUnit Unit](value string, opts *Option[TUnit]) (bool, *UnitType[TUnit]) {
-	if value, err := opts.formatter.ParseFloat(value); err == nil {
-		t := new(UnitType[TUnit])
-		t.Value = value
-		t.Unit = opts.unit
-		return true, t
+func unit[TUnit Unit, TValue Value](value string, opts *Option[TUnit]) (bool, *UnitType[TUnit, TValue]) {
+	v := new(TValue)
+	if *v == 0.0 {
+		if value, err := opts.formatter.ParseFloat(value); err == nil {
+			t := new(UnitType[TUnit, TValue])
+			t.Value = TValue(value)
+			t.Unit = *opts.unit
+			return true, t
+		}
+	} else {
+		if value, err := opts.formatter.ParseInt(value); err == nil {
+			t := new(UnitType[TUnit, TValue])
+			t.Value = TValue(value)
+			t.Unit = *opts.unit
+			return true, t
+		}
 	}
 
 	return false, nil
+}
+
+func isFloat[TValue Value](x TValue) (ok bool) {
+	_, ok = any(x).(float64)
+	return
 }

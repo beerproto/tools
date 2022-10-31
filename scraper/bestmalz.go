@@ -13,12 +13,12 @@ import (
 )
 
 type Bestmalz struct {
-	formater lxstrconv.NumberFormat
+	formatter lxstrconv.NumberFormat
 }
 
 func NewBestmalz() *Bestmalz {
 	return &Bestmalz{
-		formater: lxstrconv.NewDecimalFormat(language.German),
+		formatter: lxstrconv.NewDecimalFormat(language.German),
 	}
 }
 
@@ -44,31 +44,40 @@ func (s *Bestmalz) Parse() []*fermentables.GrainType {
 
 			switch strings.ToLower(strings.TrimSpace(spec)) {
 			case "moisture content":
-				grain.Moisture = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
+				grain.Moisture = unit.Percent(text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "extract fine grind, dry basis":
 				//grain.Yield = percent(el.Text, s.formater)
 			case "fine-coarse difference ebc":
-				grain.CoarseGrind = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
+				grain.CoarseGrind = unit.Percent(text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "viscosity (8.6%)":
-				grain.Viscosity = viscosity(text, s.formater)
+				grain.Viscosity = unit.Viscosity(text,
+					unit.WithFormatter[beerproto.ViscosityUnitType](s.formatter))
 			case "friability":
-				grain.Friability = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
+				grain.Friability = unit.Percent(text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "glassiness":
 			//	grain.gl = s.diastaticPower(el.Text, index)
 			case "protein, dry basis":
-				grain.Protein = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
+				grain.Protein = unit.Percent(text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "soluble nitrogen":
-				grain.SolubleNitrogen = concentration(text, s.formater, beerproto.ConcentrationUnitType_MG100L)
+				grain.SolubleNitrogen = unit.Concentration(text,
+					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
 			case "kolbach index":
-				grain.KolbachIndex = percent(text, s.formater, beerproto.PercentType_PERCENT_SIGN)
+				grain.KolbachIndex = unit.Percent(text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "wort color":
-				grain.Color = color(text, s.formater, beerproto.ColorUnitType_EBC)
+				grain.Color = unit.Color(text,
+					unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
 			case "wort ph":
-				grain.DiPh = acidity(text, s.formater)
+				unit.Acidity(text,
+					unit.WithFormatter[beerproto.AcidityUnitType](s.formatter))
 			case "grading > 2.5mm":
 			//	grain.gr = s.diastaticPower(el.Text, index)
 			case "diastatic power":
-				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formater))
+				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
 			}
 		})
 	})

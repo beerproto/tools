@@ -5,18 +5,19 @@ import (
 
 	beerproto "github.com/beerproto/beerproto_go"
 	"github.com/beerproto/beerproto_go/fermentables"
+	"github.com/beerproto/tools/unit"
 	colly "github.com/gocolly/colly/v2"
 	"golang.org/x/text/language"
 	"tawesoft.co.uk/go/lxstrconv"
 )
 
 type AtelierDoMalte struct {
-	formater lxstrconv.NumberFormat
+	formatter lxstrconv.NumberFormat
 }
 
 func NewAtelierDoMalte() *AtelierDoMalte {
 	return &AtelierDoMalte{
-		formater: lxstrconv.NewDecimalFormat(language.Portuguese),
+		formatter: lxstrconv.NewDecimalFormat(language.Portuguese),
 	}
 }
 
@@ -45,33 +46,45 @@ func (s *AtelierDoMalte) Parse() []*fermentables.GrainType {
 
 			switch strings.ToLower(strings.TrimSpace(el.Text[:index])) {
 			case "extrato":
-				grain.Yield = s.percent(el.Text, index)
+				grain.Yield = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "diferença moagem fina e grossa":
-				grain.CoarseGrind = s.percent(el.Text, index)
+				grain.CoarseGrind = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "tempo de sacarificação":
 				grain.Saccharification = s.time(el.Text, index)
 			case "umidade":
-				grain.Moisture = s.percent(el.Text, index)
+				grain.Moisture = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "proteína solúvel":
-				grain.SolubleProtein = s.percent(el.Text, index)
+				grain.SolubleProtein = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "indice kolback":
-				grain.KolbachIndex = s.percent(el.Text, index)
+				grain.KolbachIndex = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "fan (free amino acids)":
-				grain.Fan = s.concentration(el.Text, index)
+				grain.Fan = unit.Concentration(el.Text,
+					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
 			case "nitrogenio solúvel":
-				grain.SolubleNitrogen = s.concentration(el.Text, index)
+				grain.SolubleNitrogen = unit.Concentration(el.Text,
+					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
 			case "viscosidade do mosto":
-				grain.Viscosity = s.viscosity(el.Text, index)
+				grain.Viscosity = unit.Viscosity(el.Text,
+					unit.WithFormatter[beerproto.ViscosityUnitType](s.formatter))
 			case "friabilidade":
-				grain.Friability = s.percent(el.Text, index)
+				grain.Friability = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "poder diastático":
-				grain.DiastaticPower = s.diastaticPower(el.Text, index)
+				grain.DiastaticPower = unit.DiastaticPower(el.Text, unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
 			case "dmsp (precursor de dms)":
-				grain.DmsP = s.concentration(el.Text, index)
+				grain.DmsP = unit.Concentration(el.Text,
+					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
 			case "b glucans":
-				grain.BetaGlucan = s.concentration(el.Text, index)
+				grain.BetaGlucan = unit.Concentration(el.Text,
+					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
 			case "cor do mosto":
-				grain.Color = s.color(el.Text, index)
+				grain.Color = unit.Color(el.Text,
+					unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
 			}
 
 		})
@@ -93,7 +106,7 @@ func (s *AtelierDoMalte) time(value string, index int) *beerproto.TimeRangeType 
 	}
 	max := strings.TrimRight(strings.TrimLeft(strings.TrimLeft(right, "max"), "approx"), "min")
 	time := &beerproto.TimeRangeType{}
-	if max, err := s.formater.ParseInt(max); err == nil {
+	if max, err := s.formatter.ParseInt(max); err == nil {
 		time.Maximum = &beerproto.TimeType{
 			Value: max,
 			Unit:  beerproto.TimeType_MIN,
@@ -109,7 +122,7 @@ func (s *AtelierDoMalte) viscosity(value string, index int) *beerproto.Viscosity
 	viscosity := &beerproto.ViscosityRangeType{}
 
 	min := strings.TrimRight(strings.TrimLeft(strings.TrimLeft(right, "máx"), "."), "cp")
-	if min, err := s.formater.ParseFloat(min); err == nil {
+	if min, err := s.formatter.ParseFloat(min); err == nil {
 		viscosity.Minimum = &beerproto.ViscosityType{
 			Value: min,
 			Unit:  beerproto.ViscosityUnitType_CP,
@@ -124,7 +137,7 @@ func (s *AtelierDoMalte) diastaticPower(value string, index int) *beerproto.Dias
 	diastaticPower := &beerproto.DiastaticPowerRangeType{}
 
 	min := strings.TrimRight(strings.TrimLeft(right, "mín"), "wk")
-	if min, err := s.formater.ParseFloat(min); err == nil {
+	if min, err := s.formatter.ParseFloat(min); err == nil {
 		diastaticPower.Minimum = &beerproto.DiastaticPowerType{
 			Value: min,
 			Unit:  beerproto.DiastaticPowerUnitType_WK,
@@ -140,7 +153,7 @@ func (s *AtelierDoMalte) concentration(value string, index int) *beerproto.Conce
 	concentration := &beerproto.ConcentrationRangeType{}
 
 	min := strings.TrimRight(strings.TrimLeft(strings.TrimLeft(right, "max"), "máx"), "ppm")
-	if min, err := s.formater.ParseFloat(min); err == nil {
+	if min, err := s.formatter.ParseFloat(min); err == nil {
 		concentration.Minimum = &beerproto.ConcentrationType{
 			Value: min,
 			Unit:  beerproto.ConcentrationUnitType_PPM,
@@ -159,7 +172,7 @@ func (s *AtelierDoMalte) color(value string, index int) (color *beerproto.ColorR
 	splitMax := right[indexA+1:]
 
 	min := strings.TrimRight(strings.TrimLeft(splitMin, "min"), "ebc")
-	if min, err := s.formater.ParseFloat(min); err == nil {
+	if min, err := s.formatter.ParseFloat(min); err == nil {
 		color.Minimum = &beerproto.ColorType{
 			Value: min,
 			Unit:  beerproto.ColorUnitType_EBC,
@@ -173,7 +186,7 @@ func (s *AtelierDoMalte) color(value string, index int) (color *beerproto.ColorR
 	}
 
 	max := strings.TrimRight(strings.TrimLeft(splitMax, "max "), "ebc")
-	if max, err := s.formater.ParseFloat(max); err == nil {
+	if max, err := s.formatter.ParseFloat(max); err == nil {
 		color.Maximum = &beerproto.ColorType{
 			Value: max,
 			Unit:  beerproto.ColorUnitType_EBC,
@@ -200,7 +213,7 @@ func (s *AtelierDoMalte) percent(value string, index int) (percent *beerproto.Pe
 		}
 
 		max := strings.TrimRight(strings.TrimLeft(splitMax, "max"), "%")
-		if max, err := s.formater.ParseFloat(max); err == nil {
+		if max, err := s.formatter.ParseFloat(max); err == nil {
 			percent.Maximum = &beerproto.PercentType{
 				Value: max,
 				Unit:  beerproto.PercentType_PERCENT_SIGN,
@@ -208,7 +221,7 @@ func (s *AtelierDoMalte) percent(value string, index int) (percent *beerproto.Pe
 		}
 	}
 	min := strings.TrimRight(strings.TrimLeft(splitMin, "min"), "%")
-	if min, err := s.formater.ParseFloat(min); err == nil {
+	if min, err := s.formatter.ParseFloat(min); err == nil {
 		percent.Minimum = &beerproto.PercentType{
 			Value: min,
 			Unit:  beerproto.PercentType_PERCENT_SIGN,

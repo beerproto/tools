@@ -5,7 +5,7 @@ import (
 )
 
 func Color(value string, options ...OptionsFunc[beerproto.ColorUnitType]) *beerproto.ColorRangeType {
-	rangeType := &RangeType[beerproto.ColorUnitType]{}
+	rangeType := &RangeType[beerproto.ColorUnitType, float64]{}
 
 	options = append(options,
 		WithMinContains[beerproto.ColorUnitType]([]string{"min"}),

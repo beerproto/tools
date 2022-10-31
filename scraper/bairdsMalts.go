@@ -5,18 +5,19 @@ import (
 
 	beerproto "github.com/beerproto/beerproto_go"
 	"github.com/beerproto/beerproto_go/fermentables"
+	"github.com/beerproto/tools/unit"
 	colly "github.com/gocolly/colly/v2"
 	"golang.org/x/text/language"
 	"tawesoft.co.uk/go/lxstrconv"
 )
 
 type BairdsMalts struct {
-	formater lxstrconv.NumberFormat
+	formatter lxstrconv.NumberFormat
 }
 
 func NewBairdsMalts() *BairdsMalts {
 	return &BairdsMalts{
-		formater: lxstrconv.NewDecimalFormat(language.BritishEnglish),
+		formatter: lxstrconv.NewDecimalFormat(language.BritishEnglish),
 	}
 }
 
@@ -45,17 +46,24 @@ func (s *BairdsMalts) Parse() []*fermentables.GrainType {
 
 			switch strings.ToLower(strings.TrimSpace(el.Text[:index])) {
 			case "moisture":
-				grain.Moisture = s.percent(el.Text, index)
+				grain.Moisture = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "extract (0.7/0.2mm), dry":
-				grain.Yield = s.percent(el.Text, index)
+				grain.Yield = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "colour (ebc/srm units)":
-				grain.Color = s.color(el.Text, index)
+				grain.Color = unit.Color(el.Text,
+					unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
 			case "total nitrogen/protein, dry":
-				grain.TotalNitrogen = s.percent(el.Text, index)
+				grain.TotalNitrogen = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "snr / ki/ st ratio":
-				grain.KolbachIndex = s.percent(el.Text, index)
+				grain.KolbachIndex = unit.Percent(el.Text,
+					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "diastatic power":
-				grain.DiastaticPower = diastaticPower(text, s.formater, beerproto.DiastaticPowerUnitType_LINTNER)
+				grain.DiastaticPower = unit.DiastaticPower(text,
+					unit.WithUnit(beerproto.DiastaticPowerUnitType_LINTNER),
+					unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
 			}
 		})
 
@@ -71,7 +79,7 @@ func (s *BairdsMalts) Parse() []*fermentables.GrainType {
 				right := strings.ToLower(strings.TrimSpace(el.Text[index+1:]))
 
 				max := strings.TrimRight(strings.TrimSpace(strings.TrimLeft(right, "up to")), "%")
-				if max, err := s.formater.ParseFloat(max); err == nil {
+				if max, err := s.formatter.ParseFloat(max); err == nil {
 					maximum := &beerproto.PercentType{
 						Value: max,
 						Unit:  beerproto.PercentType_PERCENT_SIGN,
@@ -150,7 +158,7 @@ func (s *BairdsMalts) concentration(value string, index int) *beerproto.Concentr
 	concentration := &beerproto.ConcentrationRangeType{}
 
 	min := strings.TrimRight(strings.TrimLeft(strings.TrimLeft(right, "max"), "max"), "ppm")
-	if min, err := s.formater.ParseFloat(min); err == nil {
+	if min, err := s.formatter.ParseFloat(min); err == nil {
 		concentration.Minimum = &beerproto.ConcentrationType{
 			Value: min,
 			Unit:  beerproto.ConcentrationUnitType_PPM,
@@ -169,7 +177,7 @@ func (s *BairdsMalts) color(value string, index int) (color *beerproto.ColorRang
 	splitMax := right[indexA+3:]
 
 	min := strings.TrimRight(strings.TrimLeft(splitMin, "min"), "°ebc")
-	if min, err := s.formater.ParseFloat(min); err == nil {
+	if min, err := s.formatter.ParseFloat(min); err == nil {
 		color.Minimum = &beerproto.ColorType{
 			Value: min,
 			Unit:  beerproto.ColorUnitType_EBC,
@@ -177,7 +185,7 @@ func (s *BairdsMalts) color(value string, index int) (color *beerproto.ColorRang
 	}
 
 	max := strings.TrimRight(strings.TrimLeft(splitMax, "max"), "°ebc")
-	if max, err := s.formater.ParseFloat(max); err == nil {
+	if max, err := s.formatter.ParseFloat(max); err == nil {
 		color.Maximum = &beerproto.ColorType{
 			Value: max,
 			Unit:  beerproto.ColorUnitType_EBC,
@@ -193,7 +201,7 @@ func (s *BairdsMalts) percent(value string, index int) (percent *beerproto.Perce
 
 	if strings.HasSuffix(right, "max") {
 		max := strings.TrimRight(strings.TrimSpace(strings.TrimRight(right, "max")), "%")
-		if max, err := s.formater.ParseFloat(max); err == nil {
+		if max, err := s.formatter.ParseFloat(max); err == nil {
 			percent.Maximum = &beerproto.PercentType{
 				Value: max,
 				Unit:  beerproto.PercentType_PERCENT_SIGN,
@@ -203,7 +211,7 @@ func (s *BairdsMalts) percent(value string, index int) (percent *beerproto.Perce
 
 	if strings.HasSuffix(right, "min") {
 		min := strings.TrimRight(strings.TrimSpace(strings.TrimRight(right, "min")), "%")
-		if min, err := s.formater.ParseFloat(min); err == nil {
+		if min, err := s.formatter.ParseFloat(min); err == nil {
 			percent.Minimum = &beerproto.PercentType{
 				Value: min,
 				Unit:  beerproto.PercentType_PERCENT_SIGN,

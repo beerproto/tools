@@ -5,7 +5,7 @@ import (
 )
 
 func DiastaticPower(value string, options ...OptionsFunc[beerproto.DiastaticPowerUnitType]) *beerproto.DiastaticPowerRangeType {
-	rangeType := &RangeType[beerproto.DiastaticPowerUnitType]{}
+	rangeType := &RangeType[beerproto.DiastaticPowerUnitType, float64]{}
 
 	options = append(options,
 		WithMinContains[beerproto.DiastaticPowerUnitType]([]string{"min"}),
