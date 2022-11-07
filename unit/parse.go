@@ -1,6 +1,7 @@
 package unit
 
 import (
+	"math"
 	"strings"
 
 	"github.com/beerproto/tools/utils"
@@ -18,6 +19,7 @@ type Option[TUnit Unit] struct {
 	maxTrim     []string
 
 	defaultRange *Default
+	decimals     *int
 }
 
 type OptionsFunc[TUnit Unit] func(opts *Option[TUnit])
@@ -32,7 +34,7 @@ const (
 func WithMinTrim[TUnit Unit](trime []string) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
 		if s.minTrim == nil {
-			s.minTrim = trime
+			s.minTrim = utils.ToLower(trime)
 		}
 	}
 }
@@ -40,7 +42,7 @@ func WithMinTrim[TUnit Unit](trime []string) OptionsFunc[TUnit] {
 func WithMinContains[TUnit Unit](contains []string) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
 		if s.minContains == nil {
-			s.minContains = contains
+			s.minContains = utils.ToLower(contains)
 		}
 	}
 }
@@ -48,7 +50,7 @@ func WithMinContains[TUnit Unit](contains []string) OptionsFunc[TUnit] {
 func WithMaxTrim[TUnit Unit](trime []string) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
 		if s.maxTrim == nil {
-			s.maxTrim = trime
+			s.maxTrim = utils.ToLower(trime)
 		}
 	}
 }
@@ -56,7 +58,7 @@ func WithMaxTrim[TUnit Unit](trime []string) OptionsFunc[TUnit] {
 func WithMaxContains[TUnit Unit](contains []string) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
 		if s.maxContains == nil {
-			s.maxContains = contains
+			s.maxContains = utils.ToLower(contains)
 		}
 	}
 }
@@ -89,6 +91,14 @@ func WithDefault[TUnit Unit](defaultRange Default) OptionsFunc[TUnit] {
 	return func(s *Option[TUnit]) {
 		if s.defaultRange == nil {
 			s.defaultRange = &defaultRange
+		}
+	}
+}
+
+func WithDecimals[TUnit Unit](decimals int) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		if s.decimals == nil {
+			s.decimals = &decimals
 		}
 	}
 }
@@ -199,6 +209,9 @@ func unit[TUnit Unit, TValue Value](value string, opts *Option[TUnit]) (bool, *U
 	v := new(TValue)
 	if *v == 0.0 {
 		if value, err := opts.formatter.ParseFloat(value); err == nil {
+			if opts.decimals != nil {
+				value = toFixed(value, *opts.decimals)
+			}
 			t := new(UnitType[TUnit, TValue])
 			t.Value = TValue(value)
 			t.Unit = *opts.unit
@@ -216,7 +229,16 @@ func unit[TUnit Unit, TValue Value](value string, opts *Option[TUnit]) (bool, *U
 	return false, nil
 }
 
-func isFloat[TValue Value](x TValue) (ok bool) {
-	_, ok = any(x).(float64)
-	return
+// func isFloat[TValue Value](x TValue) (ok bool) {
+// 	_, ok = any(x).(float64)
+// 	return
+// }
+
+func round(num float64) int {
+	return int(num + math.Copysign(0.5, num))
+}
+
+func toFixed(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(round(num*output)) / output
 }

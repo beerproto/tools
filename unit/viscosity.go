@@ -9,11 +9,12 @@ func Viscosity(value string, options ...OptionsFunc[beerproto.ViscosityUnitType]
 
 	options = append(options,
 		WithMinContains[beerproto.ViscosityUnitType]([]string{"min"}),
-		WithMinTrim[beerproto.ViscosityUnitType]([]string{"min"}),
-		WithMaxTrim[beerproto.ViscosityUnitType]([]string{"max"}),
+		WithMinTrim[beerproto.ViscosityUnitType]([]string{"cp", "min"}),
+		WithMaxTrim[beerproto.ViscosityUnitType]([]string{"cp", "max"}),
 		WithMaxContains[beerproto.ViscosityUnitType]([]string{"max"}),
 		WithUnit(beerproto.ViscosityUnitType_CP),
 		WithDefault[beerproto.ViscosityUnitType](Max),
+		WithDecimals[beerproto.ViscosityUnitType](2),
 	)
 
 	parse(value, rangeType, options...)

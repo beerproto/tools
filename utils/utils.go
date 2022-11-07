@@ -4,6 +4,14 @@ import (
 	"strings"
 )
 
+func ToLower(cutset []string) []string {
+	arr := []string{}
+	for _, l := range cutset {
+		arr = append(arr, strings.ToLower(l))
+	}
+	return arr
+}
+
 func TrimLeft(s string, cutset []string) string {
 	for _, l := range cutset {
 		s = strings.TrimLeft(s, l)
@@ -91,6 +99,7 @@ func EndsWithArray(arr []string, cutset []string) (bool, string, []string) {
 
 func Contains(s string, cutset []string) bool {
 	s = strings.TrimSpace(s)
+
 	words := strings.Split(s, " ")
 	for _, l := range cutset {
 		for _, w := range words {

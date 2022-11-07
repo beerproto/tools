@@ -12,10 +12,18 @@ import (
 	"tawesoft.co.uk/go/lxstrconv"
 )
 
-func Agraria() []*fermentables.GrainType {
-	grains := []*fermentables.GrainType{}
+type Agraria struct {
+	formatter lxstrconv.NumberFormat
+}
 
-	portuguese := lxstrconv.NewDecimalFormat(language.Portuguese)
+func NewAgraria() *Agraria {
+	return &Agraria{
+		formatter: lxstrconv.NewDecimalFormat(language.Portuguese),
+	}
+}
+
+func (s *Agraria) Parse() []*fermentables.GrainType {
+	grains := []*fermentables.GrainType{}
 
 	c := colly.NewCollector()
 	page := colly.NewCollector()
@@ -41,7 +49,7 @@ func Agraria() []*fermentables.GrainType {
 
 				if strings.TrimSpace(el.ChildText("tbody tr:nth-child(4) th")) == "Quantity:" {
 					p := strings.TrimLeft(strings.ToLower(el.ChildText("tbody tr:nth-child(5) th")), "up to")
-					grain.Maximum = unit.Percent(p, unit.WithFormatter[beerproto.PercentType_PercentUnitType](portuguese)).Maximum
+					grain.Maximum = unit.Percent(p, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter)).Maximum
 				}
 			}
 
@@ -50,33 +58,33 @@ func Agraria() []*fermentables.GrainType {
 		e.ForEach(".conteudo table tr", func(_ int, el *colly.HTMLElement) {
 			switch strings.TrimSpace(el.ChildText("th:first-child")) {
 			case "Humidity":
-				grain.Moisture = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](portuguese))
+				grain.Moisture = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "Extract from fine grinding w.f.*":
-				grain.FineGrind = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](portuguese))
+				grain.FineGrind = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 
 			case "Expected yield":
-				grain.Yield = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](portuguese))
+				grain.Yield = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 
 			case "Saccharification time":
-				grain.Saccharification = unit.Time(el.Text, unit.WithFormatter[beerproto.TimeType_TimeUnitType](portuguese))
+				grain.Saccharification = unit.Time(el.Text, unit.WithFormatter[beerproto.TimeType_TimeUnitType](s.formatter))
 
 			case "Friabilitye":
-				grain.Friability = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](portuguese))
+				grain.Friability = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "Beta-glucans":
 				grain.BetaGlucan = unit.Concentration(el.Text, unit.WithUnit(beerproto.ConcentrationUnitType_MGL),
-					unit.WithFormatter[beerproto.ConcentrationUnitType](portuguese))
+					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
 
 			case "Viscosity":
 				grain.Viscosity = unit.Viscosity(el.Text, unit.WithUnit(beerproto.ViscosityUnitType_MPAS),
-					unit.WithFormatter[beerproto.ViscosityUnitType](portuguese))
+					unit.WithFormatter[beerproto.ViscosityUnitType](s.formatter))
 			case "Diastatic power":
 				grain.DiastaticPower = unit.DiastaticPower(el.Text,
-					unit.WithFormatter[beerproto.DiastaticPowerUnitType](portuguese))
+					unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
 
 			case "Protein":
-				grain.Protein = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](portuguese))
+				grain.Protein = unit.Percent(el.Text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "FAN (Free Amino Nitrogen)":
-				grain.Fan = unit.Concentration(el.Text, unit.WithFormatter[beerproto.ConcentrationUnitType](portuguese))
+				grain.Fan = unit.Concentration(el.Text, unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
 			}
 		})
 
