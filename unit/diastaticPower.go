@@ -8,10 +8,10 @@ func DiastaticPower(value string, options ...OptionsFunc[beerproto.DiastaticPowe
 	rangeType := &RangeType[beerproto.DiastaticPowerUnitType, float64]{}
 
 	options = append(options,
-		WithMinContains[beerproto.DiastaticPowerUnitType]([]string{"min"}),
-		WithMinTrim[beerproto.DiastaticPowerUnitType]([]string{"wk", "min"}),
-		WithMaxTrim[beerproto.DiastaticPowerUnitType]([]string{"max"}),
-		WithMaxContains[beerproto.DiastaticPowerUnitType]([]string{"max"}),
+		WithMinContains[beerproto.DiastaticPowerUnitType]([]string{">", "min"}),
+		WithMinTrim[beerproto.DiastaticPowerUnitType]([]string{">", "wk", "min"}),
+		WithMaxTrim[beerproto.DiastaticPowerUnitType]([]string{"<", "max"}),
+		WithMaxContains[beerproto.DiastaticPowerUnitType]([]string{"<", "wk", "max"}),
 		WithUnit(beerproto.DiastaticPowerUnitType_WK),
 	)
 

@@ -30,7 +30,22 @@ func TestPercent(t *testing.T) {
 					Unit:  beerproto.PercentType_PERCENT_SIGN,
 				},
 			},
-		}}
+		},
+		{
+			value: "≥ 85% ",
+			options: []OptionsFunc[beerproto.PercentType_PercentUnitType]{
+				WithFormatter[beerproto.PercentType_PercentUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.PercentType_PERCENT_SIGN),
+				WithDefault[beerproto.PercentType_PercentUnitType](Max),
+			},
+			wantConcentrationRange: &beerproto.PercentRangeType{
+				Maximum: &beerproto.PercentType{
+					Value: 85,
+					Unit:  beerproto.PercentType_PERCENT_SIGN,
+				},
+			},
+		},
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if gotDiastaticPower := Percent(tt.value, tt.options...); !reflect.DeepEqual(gotDiastaticPower, tt.wantConcentrationRange) {

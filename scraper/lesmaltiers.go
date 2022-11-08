@@ -11,17 +11,17 @@ import (
 	"tawesoft.co.uk/go/lxstrconv"
 )
 
-type Minchmalt struct {
+type LesMaltiers struct {
 	formatter lxstrconv.NumberFormat
 }
 
-func NewMinchMalt() *Minchmalt {
-	return &Minchmalt{
+func NewLesMaltiers() *LesMaltiers {
+	return &LesMaltiers{
 		formatter: lxstrconv.NewDecimalFormat(language.English),
 	}
 }
 
-func (s *Minchmalt) Parse() []*fermentables.GrainType {
+func (s *LesMaltiers) Parse() []*fermentables.GrainType {
 	grains := []*fermentables.GrainType{}
 
 	c := colly.NewCollector()
@@ -29,10 +29,10 @@ func (s *Minchmalt) Parse() []*fermentables.GrainType {
 
 	page.OnHTML("body", func(e *colly.HTMLElement) {
 		grain := &fermentables.GrainType{
-			Country:    "IE",
+			Country:    "FR",
 			Standard:   fermentables.GrainType_EBC,
 			GrainGroup: beerproto.GrainGroup_BASE,
-			Producer:   "Minchmalt",
+			Producer:   "Les Maltiers",
 			Name:       e.ChildText("h1.product-title"),
 		}
 
@@ -40,35 +40,47 @@ func (s *Minchmalt) Parse() []*fermentables.GrainType {
 			return
 		}
 
-		e.ForEach(".woocommerce-product-attributes tr", func(_ int, el *colly.HTMLElement) {
-			text := el.ChildText("td")
+		e.ForEach(".woocommerce-tabs tr", func(_ int, el *colly.HTMLElement) {
+			text := el.ChildText("td:nth-child(2)")
+			if text == "" {
+				text = el.ChildText("td")
+			}
 			header := strings.TrimSpace(el.ChildText("th:first-child"))
+			if header == "" {
+				header = strings.TrimSpace(el.ChildText("td:first-child"))
+
+			}
 			switch header {
+			case "Couleur":
+				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
 			case "EBC Colour":
 				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
 			case "Moisture":
 				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
-			case "Total Protein dry basis":
+			case "Protéines totales":
 				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
-			case "Soluble Protein":
+			case "Protéines solubles":
 				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "EBC FAN in Wort":
 				grain.Fan = unit.Concentration(text, unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
 			case "EBC Wort Viscosity":
 				grain.Viscosity = unit.Viscosity(text, unit.WithFormatter[beerproto.ViscosityUnitType](s.formatter))
-			case "Diastatic Power":
+			case "Pouvoir diastasique":
 				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
-			case "EBC Wort pH":
+			case "pH:":
 				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnitType](s.formatter)).Maximum
 			case "Alpha Amylase dry basis":
 				grain.AlphaAmylase = unit.Time(text, unit.WithFormatter[beerproto.TimeType_TimeUnitType](s.formatter)).Maximum
-			case "EBC B-Glucan in Wort":
+			case "B glucans":
 				grain.BetaGlucan = unit.Concentration(text, unit.WithUnit(beerproto.ConcentrationUnitType_MGL),
 					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
-			case "Friability":
+			case "Friabilité":
 				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+			case "Extrait":
+				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "EBC Extract 0.2mm dry basis":
 				grain.FineGrind = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+
 			}
 
 		})
@@ -80,7 +92,7 @@ func (s *Minchmalt) Parse() []*fermentables.GrainType {
 		page.Visit(e.Attr("href"))
 	})
 
-	c.Visit("https://www.minchmalt.ie/our-products/")
+	c.Visit("https://www.lesmaltiers.fr/shop/")
 
 	return grains
 }

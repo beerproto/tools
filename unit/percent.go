@@ -9,8 +9,8 @@ func Percent(value string, options ...OptionsFunc[beerproto.PercentType_PercentU
 
 	options = append(options,
 		WithMinContains[beerproto.PercentType_PercentUnitType]([]string{"min"}),
-		WithMinTrim[beerproto.PercentType_PercentUnitType]([]string{"min", "%"}),
-		WithMaxTrim[beerproto.PercentType_PercentUnitType]([]string{"max", "%"}),
+		WithMinTrim[beerproto.PercentType_PercentUnitType]([]string{"≤", "min", "%"}),
+		WithMaxTrim[beerproto.PercentType_PercentUnitType]([]string{"≥", "max", "%"}),
 		WithMaxContains[beerproto.PercentType_PercentUnitType]([]string{"max"}),
 		WithUnit(beerproto.PercentType_PERCENT_SIGN),
 		WithDefault[beerproto.PercentType_PercentUnitType](Max),

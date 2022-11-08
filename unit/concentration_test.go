@@ -17,6 +17,19 @@ func TestConcentration(t *testing.T) {
 		wantConcentrationRange *beerproto.ConcentrationRangeType
 	}{
 		{
+			value: "< 250 mg/l",
+			options: []OptionsFunc[beerproto.ConcentrationUnitType]{
+				WithFormatter[beerproto.ConcentrationUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.ConcentrationUnitType_MGL),
+			},
+			wantConcentrationRange: &beerproto.ConcentrationRangeType{
+				Maximum: &beerproto.ConcentrationType{
+					Value: 250,
+					Unit:  beerproto.ConcentrationUnitType_MGL,
+				},
+			},
+		},
+		{
 			value: "630 -730",
 			options: []OptionsFunc[beerproto.ConcentrationUnitType]{
 				WithFormatter[beerproto.ConcentrationUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
@@ -32,7 +45,8 @@ func TestConcentration(t *testing.T) {
 					Unit:  beerproto.ConcentrationUnitType_MGL,
 				},
 			},
-		}}
+		},
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if gotDiastaticPower := Concentration(tt.value, tt.options...); !reflect.DeepEqual(gotDiastaticPower, tt.wantConcentrationRange) {

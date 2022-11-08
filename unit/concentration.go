@@ -8,10 +8,10 @@ func Concentration(value string, options ...OptionsFunc[beerproto.ConcentrationU
 	rangeType := &RangeType[beerproto.ConcentrationUnitType, float64]{}
 
 	options = append(options,
-		WithMinContains[beerproto.ConcentrationUnitType]([]string{"min"}),
-		WithMinTrim[beerproto.ConcentrationUnitType]([]string{"min"}),
-		WithMaxTrim[beerproto.ConcentrationUnitType]([]string{"max"}),
-		WithMaxContains[beerproto.ConcentrationUnitType]([]string{"max"}),
+		WithMinContains[beerproto.ConcentrationUnitType]([]string{">", "min"}),
+		WithMinTrim[beerproto.ConcentrationUnitType]([]string{"mg/l", ">", "min"}),
+		WithMaxTrim[beerproto.ConcentrationUnitType]([]string{"mg/l", "<", "max"}),
+		WithMaxContains[beerproto.ConcentrationUnitType]([]string{"<", "max"}),
 		WithUnit(beerproto.ConcentrationUnitType_MG100L),
 		WithDefault[beerproto.ConcentrationUnitType](Max),
 	)

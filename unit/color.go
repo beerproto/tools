@@ -8,8 +8,8 @@ func Color(value string, options ...OptionsFunc[beerproto.ColorUnitType]) *beerp
 	rangeType := &RangeType[beerproto.ColorUnitType, float64]{}
 
 	options = append(options,
-		WithMinContains[beerproto.ColorUnitType]([]string{"min"}),
-		WithMinTrim[beerproto.ColorUnitType]([]string{"EBC", "min"}),
+		WithMinContains[beerproto.ColorUnitType]([]string{"±5", "min"}),
+		WithMinTrim[beerproto.ColorUnitType]([]string{"±5", "EBC", "min"}),
 		WithMaxTrim[beerproto.ColorUnitType]([]string{"EBC", "max"}),
 		WithMaxContains[beerproto.ColorUnitType]([]string{"max"}),
 		WithUnit(beerproto.ColorUnitType_EBC),
