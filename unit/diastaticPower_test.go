@@ -18,6 +18,18 @@ func TestDiastaticPower(t *testing.T) {
 		wantDiastaticPower *beerproto.DiastaticPowerRangeType
 	}{
 		{
+			value: "200 Wk",
+			options: []OptionsFunc[beerproto.DiastaticPowerUnitType]{
+				WithFormatter[beerproto.DiastaticPowerUnitType](lxstrconv.NewDecimalFormat(language.German)),
+			},
+			wantDiastaticPower: &beerproto.DiastaticPowerRangeType{
+				Minimum: &beerproto.DiastaticPowerType{
+					Value: 200,
+					Unit:  beerproto.DiastaticPowerUnitType_WK,
+				},
+			},
+		},
+		{
 			value: "> 250 WK ",
 			options: []OptionsFunc[beerproto.DiastaticPowerUnitType]{
 				WithFormatter[beerproto.DiastaticPowerUnitType](lxstrconv.NewDecimalFormat(language.German)),

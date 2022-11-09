@@ -105,7 +105,7 @@ func WithDecimals[TUnit Unit](decimals int) OptionsFunc[TUnit] {
 
 func parse[TUnit Unit, TValue Value](value string, rangeType *RangeType[TUnit, TValue], options ...OptionsFunc[TUnit]) {
 	options = append(options,
-		WithSplitter[TUnit]([]string{"–", "-"}),
+		WithSplitter[TUnit]([]string{"–", "-", "and"}),
 	)
 	opts := &Option[TUnit]{}
 	for _, opt := range options {

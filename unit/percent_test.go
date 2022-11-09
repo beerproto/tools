@@ -18,6 +18,24 @@ func TestPercent(t *testing.T) {
 		wantConcentrationRange *beerproto.PercentRangeType
 	}{
 		{
+			value: "4 and 5%",
+			options: []OptionsFunc[beerproto.PercentType_PercentUnitType]{
+				WithFormatter[beerproto.PercentType_PercentUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.PercentType_PERCENT_SIGN),
+				WithDefault[beerproto.PercentType_PercentUnitType](Max),
+			},
+			wantConcentrationRange: &beerproto.PercentRangeType{
+				Minimum: &beerproto.PercentType{
+					Value: 4,
+					Unit:  beerproto.PercentType_PERCENT_SIGN,
+				},
+				Maximum: &beerproto.PercentType{
+					Value: 5,
+					Unit:  beerproto.PercentType_PERCENT_SIGN,
+				},
+			},
+		},
+		{
 			value: "%4.9",
 			options: []OptionsFunc[beerproto.PercentType_PercentUnitType]{
 				WithFormatter[beerproto.PercentType_PercentUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),

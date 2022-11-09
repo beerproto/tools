@@ -29,7 +29,7 @@ func (s *Minchmalt) Parse() []*fermentables.GrainType {
 
 	page.OnHTML("body", func(e *colly.HTMLElement) {
 		grain := &fermentables.GrainType{
-			Country:    "IE",
+			Country:    "IRL",
 			Standard:   fermentables.GrainType_EBC,
 			GrainGroup: beerproto.GrainGroup_BASE,
 			Producer:   "Minchmalt",
@@ -68,7 +68,7 @@ func (s *Minchmalt) Parse() []*fermentables.GrainType {
 			case "Friability":
 				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			case "EBC Extract 0.2mm dry basis":
-				grain.FineGrind = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			}
 
 		})
