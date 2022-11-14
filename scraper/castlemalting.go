@@ -40,7 +40,6 @@ func (s *CastleMalting) Parse() []*fermentables.GrainType {
 		if grain.Name == "" {
 			return
 		}
-		fmt.Println(grain)
 
 		e.ForEach("tr", func(_ int, el *colly.HTMLElement) {
 
