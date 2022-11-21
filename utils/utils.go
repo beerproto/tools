@@ -108,6 +108,11 @@ func Contains(s string, cutset []string) bool {
 			}
 		}
 	}
+	for _, l := range cutset {
+		if strings.Contains(s, l) {
+			return true
+		}
+	}
 	return false
 }
 

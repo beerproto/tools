@@ -112,7 +112,7 @@ func parse[TUnit Unit, TValue Value](value string, rangeType *RangeType[TUnit, T
 		opt(opts)
 	}
 
-	value = strings.ToLower(strings.TrimSpace(value))
+	value = strings.Trim(strings.ToLower(strings.TrimSpace(value)), "~")
 	length := len(value)
 	if length == 0 {
 		return

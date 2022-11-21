@@ -18,6 +18,48 @@ func TestPercent(t *testing.T) {
 		wantConcentrationRange *beerproto.PercentRangeType
 	}{
 		{
+			value: "~79.0",
+			options: []OptionsFunc[beerproto.PercentType_PercentUnitType]{
+				WithFormatter[beerproto.PercentType_PercentUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.PercentType_PERCENT_SIGN),
+				WithDefault[beerproto.PercentType_PercentUnitType](Max),
+			},
+			wantConcentrationRange: &beerproto.PercentRangeType{
+				Maximum: &beerproto.PercentType{
+					Value: 79,
+					Unit:  beerproto.PercentType_PERCENT_SIGN,
+				},
+			},
+		},
+		{
+			value: "5.5%",
+			options: []OptionsFunc[beerproto.PercentType_PercentUnitType]{
+				WithFormatter[beerproto.PercentType_PercentUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.PercentType_PERCENT_SIGN),
+				WithDefault[beerproto.PercentType_PercentUnitType](Max),
+			},
+			wantConcentrationRange: &beerproto.PercentRangeType{
+				Maximum: &beerproto.PercentType{
+					Value: 5.5,
+					Unit:  beerproto.PercentType_PERCENT_SIGN,
+				},
+			},
+		},
+		{
+			value: "<13.0",
+			options: []OptionsFunc[beerproto.PercentType_PercentUnitType]{
+				WithFormatter[beerproto.PercentType_PercentUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.PercentType_PERCENT_SIGN),
+				WithDefault[beerproto.PercentType_PercentUnitType](Max),
+			},
+			wantConcentrationRange: &beerproto.PercentRangeType{
+				Maximum: &beerproto.PercentType{
+					Value: 13,
+					Unit:  beerproto.PercentType_PERCENT_SIGN,
+				},
+			},
+		},
+		{
 			value: "4 and 5%",
 			options: []OptionsFunc[beerproto.PercentType_PercentUnitType]{
 				WithFormatter[beerproto.PercentType_PercentUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
