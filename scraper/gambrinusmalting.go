@@ -63,33 +63,6 @@ func (s *GambrinusMalting) Parse() []*fermentables.GrainType {
 			}
 		})
 
-		e.ForEach(".product-grid a", func(_ int, el *colly.HTMLElement) {
-			index := strings.Index(el.Text, ":")
-			if index < 0 {
-				return
-			}
-
-			switch strings.ToLower(strings.TrimSpace(el.Text[:index])) {
-			case "inclusion rate":
-
-				right := strings.ToLower(strings.TrimSpace(el.Text[index+1:]))
-
-				max := strings.TrimRight(strings.TrimSpace(strings.TrimLeft(right, "up to")), "%")
-				if max, err := s.formatter.ParseFloat(max); err == nil {
-					maximum := &beerproto.PercentType{
-						Value: max,
-						Unit:  beerproto.PercentType_PERCENT_SIGN,
-					}
-					grain.Maximum = maximum
-				}
-			case "suggested use":
-
-				right := strings.TrimSpace(el.Text[index+1:])
-				grain.Notes = right
-
-			}
-		})
-
 		grains = append(grains, grain)
 	})
 
