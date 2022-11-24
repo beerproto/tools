@@ -2,7 +2,24 @@ package unit
 
 import (
 	beerproto "github.com/beerproto/beerproto_go"
+	"github.com/beerproto/beerproto_go/fermentables"
 )
+
+func WithColorFromStandard[TUnit Unit](standard fermentables.GrainType_StandardType) OptionsFunc[TUnit] {
+	return func(s *Option[TUnit]) {
+		switch standard {
+		case fermentables.GrainType_EBC:
+			WithUnit(beerproto.ColorUnitType_EBC)
+			return
+		case fermentables.GrainType_ASBC:
+			WithUnit(beerproto.ColorUnitType_SRM)
+			return
+		case fermentables.GrainType_ION:
+			WithUnit(beerproto.ColorUnitType_LOVI)
+			return
+		}
+	}
+}
 
 func Color(value string, options ...OptionsFunc[beerproto.ColorUnitType]) *beerproto.ColorRangeType {
 	rangeType := &RangeType[beerproto.ColorUnitType, float64]{}
