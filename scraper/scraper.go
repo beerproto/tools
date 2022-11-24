@@ -13,7 +13,7 @@ import (
 )
 
 type MaltingOptions struct {
-	baseURL                 *string
+	baseURL                 []string
 	grainGroupsURL          []string
 	grainGroupSelector      *string
 	titleSelector           *string
@@ -243,7 +243,9 @@ func WithProductRowSelector(selector string) MaltingOptionsFunc {
 func WithBaseURL(url string) MaltingOptionsFunc {
 	return func(s *MaltingOptions) {
 		if s.baseURL == nil {
-			s.baseURL = &url
+			s.baseURL = []string{url}
+		} else {
+			s.baseURL = append(s.baseURL, url)
 		}
 	}
 }
@@ -344,8 +346,8 @@ func (s *Malting) Parse() []*fermentables.GrainType {
 		})
 	}
 
-	if s.options.baseURL != nil {
-		c.Visit(*s.options.baseURL)
+	for _, url := range s.options.baseURL {
+		c.Visit(url)
 	}
 
 	for _, url := range s.options.grainGroupsURL {
