@@ -5,7 +5,7 @@ import (
 	"tawesoft.co.uk/go/lxstrconv"
 )
 
-var gladfieldmalt = NewMalting("gladfieldmalt", "NZ", lxstrconv.NewDecimalFormat(language.English),
+var gladfieldmalt = NewMalting("Gladfield Malt", "NZL", lxstrconv.NewDecimalFormat(language.English),
 	WithGrainGroupURL("https://www.gladfieldmalt.co.nz/our-malts/base-malts"),
 	WithGrainGroupURL("https://www.gladfieldmalt.co.nz/our-malts/distill-malts"),
 	WithGrainGroupURL("https://www.gladfieldmalt.co.nz/our-malts/specialty-malts"),
@@ -14,7 +14,7 @@ var gladfieldmalt = NewMalting("gladfieldmalt", "NZ", lxstrconv.NewDecimalFormat
 	WithGrainGroupSelector(".dmBody .dmRespRow"),
 	WithProductRowSelector(".site_content table tr"),
 	WithProductHeaderSelector("td:first-child"),
-	WithProductValueMaxSelector("td:nth-child(3)"),
+	WithProductValueSelector("td:nth-child(3)"),
 	WithYield("Extract - Fine Dry min%"),
 	WithMoisture("Moisture (max) %"),
 	WithSaccharification("Saccharification time"),
