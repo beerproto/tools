@@ -455,7 +455,7 @@ func (s *Malting) grainParse(e *colly.HTMLElement) (bool, *fermentables.GrainTyp
 
 		if s.options.yield != nil {
 			if header == *s.options.yield {
-				grain.Moisture = unit.Percent(text,
+				grain.Yield = unit.Percent(text,
 					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 
 			}
