@@ -2,6 +2,7 @@ package scraper
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
 	beerproto "github.com/beerproto/beerproto_go"
@@ -19,9 +20,9 @@ type MaltingOptions struct {
 	titleSelector           *string
 	productSelector         *string
 	productRowSelector      *string
-	productHeaderSelector   *string
+	productHeaderSelector   []string
 	productHeaderTrim       *[]string
-	productValueSelector    *string
+	productValueSelector    []string
 	productValueMinSelector *string
 	productValueMaxSelector *string
 
@@ -29,23 +30,24 @@ type MaltingOptions struct {
 	standard         *fermentables.GrainType_StandardType
 	grainGroup       *beerproto.GrainGroup
 
-	moisture      *string
-	yield         *string
-	color         *string
-	protein       *string
-	maximum       *string
-	friability    *string
-	betaGlucan    *string
-	alphaAmylase  *string
-	diPh          *string
-	fan           *string
-	totalNitrogen *string
-
+	moisture         *string
+	yield            *string
+	color            []string
+	protein          *string
+	maximum          *string
+	friability       *string
+	betaGlucan       *string
+	alphaAmylase     *string
+	diPh             *string
+	fan              *string
+	totalNitrogen    *string
 	diastaticPower   *string
 	kolbachIndex     *string
 	saccharification *string
 	fineGrind        *string
 	coarseGrind      *string
+	solubleProtein   *string
+	viscosity        *string
 }
 
 type MaltingOptionsFunc func(opts *MaltingOptions)
@@ -62,6 +64,14 @@ func WithProductHeaderTrim(trim []string) MaltingOptionsFunc {
 	return func(s *MaltingOptions) {
 		if s.productHeaderTrim == nil {
 			s.productHeaderTrim = &trim
+		}
+	}
+}
+
+func WithViscosity(header string) MaltingOptionsFunc {
+	return func(s *MaltingOptions) {
+		if s.viscosity == nil {
+			s.viscosity = &header
 		}
 	}
 }
@@ -92,7 +102,17 @@ func WithSaccharification(header string) MaltingOptionsFunc {
 func WithColor(header string) MaltingOptionsFunc {
 	return func(s *MaltingOptions) {
 		if s.color == nil {
-			s.color = &header
+			s.color = []string{header}
+		} else {
+			s.color = append(s.color, header)
+		}
+	}
+}
+
+func WithSolubleProtein(header string) MaltingOptionsFunc {
+	return func(s *MaltingOptions) {
+		if s.solubleProtein == nil {
+			s.solubleProtein = &header
 		}
 	}
 }
@@ -204,7 +224,9 @@ func WithGrainGroupSelector(selector string) MaltingOptionsFunc {
 func WithProductValueSelector(selector string) MaltingOptionsFunc {
 	return func(s *MaltingOptions) {
 		if s.productValueSelector == nil {
-			s.productValueSelector = &selector
+			s.productValueSelector = []string{selector}
+		} else {
+			s.productValueSelector = append(s.productValueSelector, selector)
 		}
 	}
 }
@@ -227,7 +249,9 @@ func WithProductValueMaxSelector(selector string) MaltingOptionsFunc {
 func WithProductHeaderSelector(selector string) MaltingOptionsFunc {
 	return func(s *MaltingOptions) {
 		if s.productHeaderSelector == nil {
-			s.productHeaderSelector = &selector
+			s.productHeaderSelector = []string{selector}
+		} else {
+			s.productHeaderSelector = append(s.productHeaderSelector, selector)
 		}
 	}
 }
@@ -341,7 +365,13 @@ func (s *Malting) Parse() []*fermentables.GrainType {
 
 	if s.options.productSelector != nil {
 		c.OnHTML(*s.options.productSelector, func(e *colly.HTMLElement) {
-			url := fmt.Sprintf("%s://%s%s", e.Request.URL.Scheme, e.Request.URL.Host, e.Attr("href"))
+			target := e.Attr("href")
+			uri, _ := url.Parse(target)
+			if uri.IsAbs() {
+				page.Visit(target)
+
+			}
+			url := fmt.Sprintf("%s://%s%s", e.Request.URL.Scheme, e.Request.URL.Host, target)
 			page.Visit(url)
 		})
 	}
@@ -375,15 +405,28 @@ func (s *Malting) grainParse(e *colly.HTMLElement) (bool, *fermentables.GrainTyp
 	}
 
 	e.ForEach(*s.options.productRowSelector, func(_ int, el *colly.HTMLElement) {
-		header := strings.TrimSpace(el.ChildText(*s.options.productHeaderSelector))
+		header := ""
+
+		for _, selector := range s.options.productHeaderSelector {
+			header = strings.TrimSpace(el.ChildText(selector))
+
+			if header != "" {
+				break
+			}
+		}
 
 		if header == "" {
 			return
 		}
 
 		text := ""
-		if s.options.productValueSelector != nil {
-			text = strings.TrimSpace(el.ChildText(*s.options.productValueSelector))
+
+		for _, selector := range s.options.productValueSelector {
+			text = strings.TrimSpace(el.ChildText(selector))
+
+			if text != "" {
+				break
+			}
 		}
 
 		if s.options.productValueMinSelector != nil {
@@ -418,8 +461,8 @@ func (s *Malting) grainParse(e *colly.HTMLElement) (bool, *fermentables.GrainTyp
 			}
 		}
 
-		if s.options.color != nil {
-			if header == *s.options.color {
+		for _, h := range s.options.color {
+			if h == header {
 				grain.Color = unit.Color(text,
 					unit.WithFormatter[beerproto.ColorUnitType](s.formatter),
 					unit.WithColorFromStandard[beerproto.ColorUnitType](*s.options.standard),
@@ -430,6 +473,12 @@ func (s *Malting) grainParse(e *colly.HTMLElement) (bool, *fermentables.GrainTyp
 		if s.options.protein != nil {
 			if header == *s.options.protein {
 				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+			}
+		}
+
+		if s.options.solubleProtein != nil {
+			if header == *s.options.solubleProtein {
+				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
 			}
 		}
 

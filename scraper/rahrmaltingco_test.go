@@ -9,12 +9,12 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-func TestLesMaltiers(t *testing.T) {
+func TestRahrMaltingCo(t *testing.T) {
 
 	list := &fermentables.GrainsType{
 		Grains: []*fermentables.GrainType{},
 	}
-	list.Grains = append(list.Grains, llesmaltiers.Parse()...)
+	list.Grains = append(list.Grains, rahrmaltingco.Parse()...)
 
 	mops := &protojson.MarshalOptions{}
 	b, _ := mops.Marshal(list)
