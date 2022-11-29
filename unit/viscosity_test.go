@@ -13,19 +13,19 @@ func TestViscosity(t *testing.T) {
 	tests := []struct {
 		name              string
 		value             string
-		options           []OptionsFunc[beerproto.ViscosityUnitType]
+		options           []OptionsFunc[beerproto.ViscosityUnit]
 		wantViscositRange *beerproto.ViscosityRangeType
 	}{
 		{
 			value: "1.65cP Max",
-			options: []OptionsFunc[beerproto.ViscosityUnitType]{
-				WithFormatter[beerproto.ViscosityUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
-				WithUnit(beerproto.ViscosityUnitType_CP),
+			options: []OptionsFunc[beerproto.ViscosityUnit]{
+				WithFormatter[beerproto.ViscosityUnit](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.ViscosityUnit_VISCOSITY_UNIT_CP),
 			},
 			wantViscositRange: &beerproto.ViscosityRangeType{
 				Maximum: &beerproto.ViscosityType{
 					Value: 1.65,
-					Unit:  beerproto.ViscosityUnitType_CP,
+					Unit:  beerproto.ViscosityUnit_VISCOSITY_UNIT_CP,
 				},
 			},
 		}}

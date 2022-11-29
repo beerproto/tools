@@ -4,16 +4,16 @@ import (
 	beerproto "github.com/beerproto/beerproto_go"
 )
 
-func Concentration(value string, options ...OptionsFunc[beerproto.ConcentrationUnitType]) *beerproto.ConcentrationRangeType {
-	rangeType := &RangeType[beerproto.ConcentrationUnitType, float64]{}
+func Concentration(value string, options ...OptionsFunc[beerproto.ConcentrationUnit]) *beerproto.ConcentrationRangeType {
+	rangeType := &RangeType[beerproto.ConcentrationUnit, float64]{}
 
 	options = append(options,
-		WithMinContains[beerproto.ConcentrationUnitType]([]string{">", "min"}),
-		WithMinTrim[beerproto.ConcentrationUnitType]([]string{"mg/l", ">", "min"}),
-		WithMaxTrim[beerproto.ConcentrationUnitType]([]string{"mg/l", "<", "max"}),
-		WithMaxContains[beerproto.ConcentrationUnitType]([]string{"<", "max"}),
-		WithUnit(beerproto.ConcentrationUnitType_MG100L),
-		WithDefault[beerproto.ConcentrationUnitType](Max),
+		WithMinContains[beerproto.ConcentrationUnit]([]string{">", "min"}),
+		WithMinTrim[beerproto.ConcentrationUnit]([]string{"mg/l", ">", "min"}),
+		WithMaxTrim[beerproto.ConcentrationUnit]([]string{"mg/l", "<", "max"}),
+		WithMaxContains[beerproto.ConcentrationUnit]([]string{"<", "max"}),
+		WithUnit(beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MG100L),
+		WithDefault[beerproto.ConcentrationUnit](Max),
 	)
 
 	parse(value, rangeType, options...)

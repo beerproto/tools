@@ -31,7 +31,7 @@ func (s *CrispMalt) Parse() []*fermentables.GrainType {
 		grain := &fermentables.GrainType{
 			Country:    "GBR",
 			Standard:   fermentables.GrainType_EBC,
-			GrainGroup: beerproto.GrainGroup_BASE,
+			GrainGroup: beerproto.GrainGroup_GRAIN_GROUP_BASE,
 			Producer:   "Crisp Malt",
 			Name:       e.ChildAttr(".malt-post__title", "alt"),
 		}
@@ -42,7 +42,7 @@ func (s *CrispMalt) Parse() []*fermentables.GrainType {
 
 		maximum := e.ChildText(".malt-post__overview .overview-table__column:nth-child(2) p")
 		maximum = strings.TrimLeft(strings.ToLower(maximum), "up to")
-		grain.Maximum = unit.Percent(maximum, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter)).Maximum
+		grain.Maximum = unit.Percent(maximum, unit.WithFormatter[beerproto.PercentUnit](s.formatter)).Maximum
 
 		e.ForEach(".uk-visible\\@s tr", func(_ int, el *colly.HTMLElement) {
 
@@ -55,23 +55,23 @@ func (s *CrispMalt) Parse() []*fermentables.GrainType {
 
 			switch header {
 			case "Moisture":
-				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter),
-					unit.WithDefault[beerproto.PercentType_PercentUnitType](unit.Min),
+				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter),
+					unit.WithDefault[beerproto.PercentUnit](unit.Min),
 				)
 			case "Soluble Extract As is":
-				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Friability":
-				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Extract":
-				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Extract difference fine-coarse":
-				grain.FineCoarseDifference = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.FineCoarseDifference = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Colour":
-				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
+				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnit](s.formatter))
 			case "TN/TP":
-				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "SNR/KI/ST RATIO":
-				grain.KolbachIndex = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.KolbachIndex = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			}
 		})
 

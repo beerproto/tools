@@ -9,28 +9,28 @@ func WithColorFromStandard[TUnit Unit](standard fermentables.GrainType_StandardT
 	return func(s *Option[TUnit]) {
 		switch standard {
 		case fermentables.GrainType_EBC:
-			WithUnit(beerproto.ColorUnitType_EBC)
+			WithUnit(beerproto.ColorUnit_COLOR_UNIT_EBC)
 			return
 		case fermentables.GrainType_ASBC:
-			WithUnit(beerproto.ColorUnitType_SRM)
+			WithUnit(beerproto.ColorUnit_COLOR_UNIT_SRM)
 			return
 		case fermentables.GrainType_ION:
-			WithUnit(beerproto.ColorUnitType_LOVI)
+			WithUnit(beerproto.ColorUnit_COLOR_UNIT_LOVI)
 			return
 		}
 	}
 }
 
-func Color(value string, options ...OptionsFunc[beerproto.ColorUnitType]) *beerproto.ColorRangeType {
-	rangeType := &RangeType[beerproto.ColorUnitType, float64]{}
+func Color(value string, options ...OptionsFunc[beerproto.ColorUnit]) *beerproto.ColorRangeType {
+	rangeType := &RangeType[beerproto.ColorUnit, float64]{}
 
 	options = append(options,
-		WithMinContains[beerproto.ColorUnitType]([]string{"±5", "min"}),
-		WithMinTrim[beerproto.ColorUnitType]([]string{"±5", "EBC", "min"}),
-		WithMaxTrim[beerproto.ColorUnitType]([]string{"EBC", "max"}),
-		WithMaxContains[beerproto.ColorUnitType]([]string{"max"}),
-		WithUnit(beerproto.ColorUnitType_EBC),
-		WithDefault[beerproto.ColorUnitType](Max),
+		WithMinContains[beerproto.ColorUnit]([]string{"±5", "min"}),
+		WithMinTrim[beerproto.ColorUnit]([]string{"±5", "EBC", "min"}),
+		WithMaxTrim[beerproto.ColorUnit]([]string{"EBC", "max"}),
+		WithMaxContains[beerproto.ColorUnit]([]string{"max"}),
+		WithUnit(beerproto.ColorUnit_COLOR_UNIT_EBC),
+		WithDefault[beerproto.ColorUnit](Max),
 	)
 
 	parse(value, rangeType, options...)

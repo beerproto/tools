@@ -14,23 +14,23 @@ func TestParse(t *testing.T) {
 	tests := []struct {
 		name      string
 		value     string
-		rangeType *RangeType[beerproto.DiastaticPowerUnitType, float64]
-		want      *RangeType[beerproto.DiastaticPowerUnitType, float64]
-		options   []OptionsFunc[beerproto.DiastaticPowerUnitType]
+		rangeType *RangeType[beerproto.DiastaticPowerUnit, float64]
+		want      *RangeType[beerproto.DiastaticPowerUnit, float64]
+		options   []OptionsFunc[beerproto.DiastaticPowerUnit]
 	}{
 		{
 			value: "245 wk min",
-			options: []OptionsFunc[beerproto.DiastaticPowerUnitType]{
-				WithFormatter[beerproto.DiastaticPowerUnitType](lxstrconv.NewDecimalFormat(language.German)),
-				WithMinContains[beerproto.DiastaticPowerUnitType]([]string{"min"}),
-				WithMinTrim[beerproto.DiastaticPowerUnitType]([]string{"wk", "min"}),
-				WithUnit(beerproto.DiastaticPowerUnitType_WK),
+			options: []OptionsFunc[beerproto.DiastaticPowerUnit]{
+				WithFormatter[beerproto.DiastaticPowerUnit](lxstrconv.NewDecimalFormat(language.German)),
+				WithMinContains[beerproto.DiastaticPowerUnit]([]string{"min"}),
+				WithMinTrim[beerproto.DiastaticPowerUnit]([]string{"wk", "min"}),
+				WithUnit(beerproto.DiastaticPowerUnit_DIASTATIC_POWER_UNIT_WK),
 			},
-			rangeType: &RangeType[beerproto.DiastaticPowerUnitType, float64]{},
-			want: &RangeType[beerproto.DiastaticPowerUnitType, float64]{
-				Minimum: &UnitType[beerproto.DiastaticPowerUnitType, float64]{
+			rangeType: &RangeType[beerproto.DiastaticPowerUnit, float64]{},
+			want: &RangeType[beerproto.DiastaticPowerUnit, float64]{
+				Minimum: &UnitType[beerproto.DiastaticPowerUnit, float64]{
 					Value: 245,
-					Unit:  beerproto.DiastaticPowerUnitType_WK,
+					Unit:  beerproto.DiastaticPowerUnit_DIASTATIC_POWER_UNIT_WK,
 				},
 			},
 		},

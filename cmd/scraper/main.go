@@ -13,7 +13,7 @@ func main() {
 	list := &fermentables.GrainsType{
 		Grains: []*fermentables.GrainType{},
 	}
-	list.Grains = append(list.Grains, scraper.Agraria()...)
+	list.Grains = append(list.Grains, scraper.NewAgraria().Parse()...)
 	list.Grains = append(list.Grains, scraper.NewAtelierDoMalte().Parse()...)
 
 	mops := &protojson.MarshalOptions{}

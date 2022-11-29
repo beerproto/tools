@@ -40,7 +40,7 @@ func (s *MouterijDingemans) Parse() []*fermentables.GrainType {
 		grain := &fermentables.GrainType{
 			Country:    "BEL",
 			Standard:   fermentables.GrainType_EBC,
-			GrainGroup: beerproto.GrainGroup_BASE,
+			GrainGroup: beerproto.GrainGroup_GRAIN_GROUP_BASE,
 			Producer:   "Mouterij Dingemans",
 		}
 
@@ -54,17 +54,17 @@ func (s *MouterijDingemans) Parse() []*fermentables.GrainType {
 
 			switch header {
 			case "Extract fine D.M.":
-				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Moisture":
-				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter),
-					unit.WithDefault[beerproto.PercentType_PercentUnitType](unit.Min),
+				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter),
+					unit.WithDefault[beerproto.PercentUnit](unit.Min),
 				)
 			case "Colour":
-				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
+				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnit](s.formatter))
 			case "Total protein":
-				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "pH":
-				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnitType](s.formatter)).Maximum
+				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnit](s.formatter)).Maximum
 			}
 		})
 

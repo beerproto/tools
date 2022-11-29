@@ -32,7 +32,7 @@ func (s *CastleMalting) Parse() []*fermentables.GrainType {
 		grain := &fermentables.GrainType{
 			Country:    "BEL",
 			Standard:   fermentables.GrainType_EBC,
-			GrainGroup: beerproto.GrainGroup_BASE,
+			GrainGroup: beerproto.GrainGroup_GRAIN_GROUP_BASE,
 			Producer:   "Castle Malting",
 			Name:       e.ChildText(".MaltName"),
 		}
@@ -57,38 +57,38 @@ func (s *CastleMalting) Parse() []*fermentables.GrainType {
 
 			switch header {
 			case "Moisture":
-				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter),
-					unit.WithDefault[beerproto.PercentType_PercentUnitType](unit.Min),
+				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter),
+					unit.WithDefault[beerproto.PercentUnit](unit.Min),
 				)
 			case "Extract (dry basis)":
-				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Extract difference fine-coarse":
-				grain.FineCoarseDifference = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.FineCoarseDifference = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Wort color":
 				if strings.Contains(text, "(") {
 					index := strings.Index(text, "(")
 					text = text[:index]
 				}
-				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
+				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnit](s.formatter))
 			case "Total protein":
-				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Soluble protein":
-				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Kolbach index":
-				grain.KolbachIndex = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.KolbachIndex = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Viscosity":
-				grain.Viscosity = unit.Viscosity(text, unit.WithFormatter[beerproto.ViscosityUnitType](s.formatter))
+				grain.Viscosity = unit.Viscosity(text, unit.WithFormatter[beerproto.ViscosityUnit](s.formatter))
 			case "Beta glucans":
-				grain.BetaGlucan = unit.Concentration(text, unit.WithUnit(beerproto.ConcentrationUnitType_MGL),
-					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
+				grain.BetaGlucan = unit.Concentration(text, unit.WithUnit(beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MGL),
+					unit.WithFormatter[beerproto.ConcentrationUnit](s.formatter))
 			case "pH":
-				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnitType](s.formatter)).Maximum
+				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnit](s.formatter)).Maximum
 			case "Diastatic Power":
-				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
+				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnit](s.formatter))
 			case "Friability":
-				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Saccharification":
-				grain.Saccharification = unit.Time(text, unit.WithFormatter[beerproto.TimeType_TimeUnitType](s.formatter))
+				grain.Saccharification = unit.Time(text, unit.WithFormatter[beerproto.TimeUnit](s.formatter))
 			}
 		})
 

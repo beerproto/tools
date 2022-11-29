@@ -31,7 +31,7 @@ func (s *PaulsMalt) Parse() []*fermentables.GrainType {
 		grain := &fermentables.GrainType{
 			Country:    "GBR",
 			Standard:   fermentables.GrainType_EBC,
-			GrainGroup: beerproto.GrainGroup_BASE,
+			GrainGroup: beerproto.GrainGroup_GRAIN_GROUP_BASE,
 			Producer:   "Pauls Malt",
 			Name:       e.ChildText("h1.product-title"),
 		}
@@ -52,26 +52,26 @@ func (s *PaulsMalt) Parse() []*fermentables.GrainType {
 			}
 			switch header {
 			case "IOB Colour in Wort":
-				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
+				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnit](s.formatter))
 			case "Moisture":
-				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Total Protein dry basis":
-				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Total Nitrogen, Dry":
-				grain.TotalNitrogen = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.TotalNitrogen = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "IOB FAN in Wort":
-				grain.Fan = unit.Concentration(text, unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
+				grain.Fan = unit.Concentration(text, unit.WithFormatter[beerproto.ConcentrationUnit](s.formatter))
 			case "EBC Wort pH":
-				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnitType](s.formatter)).Maximum
+				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnit](s.formatter)).Maximum
 			case "Alpha Amylase dry basis":
-				grain.AlphaAmylase = unit.Time(text, unit.WithFormatter[beerproto.TimeType_TimeUnitType](s.formatter)).Maximum
+				grain.AlphaAmylase = unit.Time(text, unit.WithFormatter[beerproto.TimeUnit](s.formatter)).Maximum
 			case "IOB B-Glucan in Wort":
-				grain.BetaGlucan = unit.Concentration(text, unit.WithUnit(beerproto.ConcentrationUnitType_MGL),
-					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
+				grain.BetaGlucan = unit.Concentration(text, unit.WithUnit(beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MGL),
+					unit.WithFormatter[beerproto.ConcentrationUnit](s.formatter))
 			case "Friability":
-				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "EBC Extract 0.2mm dry basis":
-				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 
 			}
 

@@ -30,7 +30,7 @@ func (s *BairdsMalts) Parse() []*fermentables.GrainType {
 		grain := &fermentables.GrainType{
 			Country:    "GBR",
 			Standard:   fermentables.GrainType_EBC,
-			GrainGroup: beerproto.GrainGroup_BASE,
+			GrainGroup: beerproto.GrainGroup_GRAIN_GROUP_BASE,
 			Producer:   "Bairds Malt",
 			Name:       e.ChildText("h1"),
 		}
@@ -47,23 +47,23 @@ func (s *BairdsMalts) Parse() []*fermentables.GrainType {
 			switch strings.ToLower(strings.TrimSpace(el.Text[:index])) {
 			case "moisture":
 				grain.Moisture = unit.Percent(el.Text,
-					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+					unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "extract (0.7/0.2mm), dry":
 				grain.Yield = unit.Percent(el.Text,
-					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+					unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "colour (ebc/srm units)":
 				grain.Color = unit.Color(el.Text,
-					unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
+					unit.WithFormatter[beerproto.ColorUnit](s.formatter))
 			case "total nitrogen/protein, dry":
 				grain.TotalNitrogen = unit.Percent(el.Text,
-					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+					unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "snr / ki/ st ratio":
 				grain.KolbachIndex = unit.Percent(el.Text,
-					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+					unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "diastatic power":
 				grain.DiastaticPower = unit.DiastaticPower(text,
-					unit.WithUnit(beerproto.DiastaticPowerUnitType_LINTNER),
-					unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
+					unit.WithUnit(beerproto.DiastaticPowerUnit_DIASTATIC_POWER_UNIT_LINTNER),
+					unit.WithFormatter[beerproto.DiastaticPowerUnit](s.formatter))
 			}
 		})
 
@@ -82,7 +82,7 @@ func (s *BairdsMalts) Parse() []*fermentables.GrainType {
 				if max, err := s.formatter.ParseFloat(max); err == nil {
 					maximum := &beerproto.PercentType{
 						Value: max,
-						Unit:  beerproto.PercentType_PERCENT_SIGN,
+						Unit:  beerproto.PercentUnit_PERCENT_UNIT_PERCENT_SIGN,
 					}
 					grain.Maximum = maximum
 				}

@@ -40,7 +40,7 @@ func (s *DurstMalz) Parse() []*fermentables.GrainType {
 		grain := &fermentables.GrainType{
 			Country:    "DEU",
 			Standard:   fermentables.GrainType_EBC,
-			GrainGroup: beerproto.GrainGroup_BASE,
+			GrainGroup: beerproto.GrainGroup_GRAIN_GROUP_BASE,
 			Producer:   "Durst Malz",
 		}
 
@@ -58,27 +58,27 @@ func (s *DurstMalz) Parse() []*fermentables.GrainType {
 
 			switch header {
 			case "Wassergehalt":
-				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter),
-					unit.WithDefault[beerproto.PercentType_PercentUnitType](unit.Min),
+				grain.Moisture = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter),
+					unit.WithDefault[beerproto.PercentUnit](unit.Min),
 				)
 			case "Feinschrotextrakt":
-				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Yield = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Extraktdifferenz":
-				grain.FineCoarseDifference = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.FineCoarseDifference = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Malzfarbe":
-				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnitType](s.formatter))
+				grain.Color = unit.Color(text, unit.WithFormatter[beerproto.ColorUnit](s.formatter))
 			case "Eiweißgehalt":
-				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Eiweißlösung":
-				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Viskosität":
-				grain.Viscosity = unit.Viscosity(text, unit.WithFormatter[beerproto.ViscosityUnitType](s.formatter))
+				grain.Viscosity = unit.Viscosity(text, unit.WithFormatter[beerproto.ViscosityUnit](s.formatter))
 			case "Friabilimeter mehlig":
-				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "FAN":
-				grain.Fan = unit.Concentration(text, unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
+				grain.Fan = unit.Concentration(text, unit.WithFormatter[beerproto.ConcentrationUnit](s.formatter))
 			case "Diastatische Kraft":
-				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
+				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnit](s.formatter))
 			}
 		})
 

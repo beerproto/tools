@@ -4,16 +4,16 @@ import (
 	beerproto "github.com/beerproto/beerproto_go"
 )
 
-func Acidity(value string, options ...OptionsFunc[beerproto.AcidityUnitType]) *beerproto.AcidityRangeType {
-	rangeType := &RangeType[beerproto.AcidityUnitType, float64]{}
+func Acidity(value string, options ...OptionsFunc[beerproto.AcidityUnit]) *beerproto.AcidityRangeType {
+	rangeType := &RangeType[beerproto.AcidityUnit, float64]{}
 
 	options = append(options,
-		WithMinContains[beerproto.AcidityUnitType]([]string{"min"}),
-		WithMinTrim[beerproto.AcidityUnitType]([]string{"min"}),
-		WithMaxTrim[beerproto.AcidityUnitType]([]string{"max"}),
-		WithMaxContains[beerproto.AcidityUnitType]([]string{"max"}),
-		WithUnit(beerproto.AcidityUnitType_PH),
-		WithDefault[beerproto.AcidityUnitType](Max),
+		WithMinContains[beerproto.AcidityUnit]([]string{"min"}),
+		WithMinTrim[beerproto.AcidityUnit]([]string{"min"}),
+		WithMaxTrim[beerproto.AcidityUnit]([]string{"max"}),
+		WithMaxContains[beerproto.AcidityUnit]([]string{"max"}),
+		WithUnit(beerproto.AcidityUnit_ACIDITY_UNIT_PH),
+		WithDefault[beerproto.AcidityUnit](Max),
 	)
 
 	parse(value, rangeType, options...)

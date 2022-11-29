@@ -4,16 +4,16 @@ import (
 	beerproto "github.com/beerproto/beerproto_go"
 )
 
-func Percent(value string, options ...OptionsFunc[beerproto.PercentType_PercentUnitType]) *beerproto.PercentRangeType {
-	rangeType := &RangeType[beerproto.PercentType_PercentUnitType, float64]{}
+func Percent(value string, options ...OptionsFunc[beerproto.PercentUnit]) *beerproto.PercentRangeType {
+	rangeType := &RangeType[beerproto.PercentUnit, float64]{}
 
 	options = append(options,
-		WithMinContains[beerproto.PercentType_PercentUnitType]([]string{">", "min"}),
-		WithMinTrim[beerproto.PercentType_PercentUnitType]([]string{">", "≤", "min", "%"}),
-		WithMaxTrim[beerproto.PercentType_PercentUnitType]([]string{"<", "≥", "max", "%"}),
-		WithMaxContains[beerproto.PercentType_PercentUnitType]([]string{"<", "max"}),
-		WithUnit(beerproto.PercentType_PERCENT_SIGN),
-		WithDefault[beerproto.PercentType_PercentUnitType](Max),
+		WithMinContains[beerproto.PercentUnit]([]string{">", "min"}),
+		WithMinTrim[beerproto.PercentUnit]([]string{">", "≤", "min", "%"}),
+		WithMaxTrim[beerproto.PercentUnit]([]string{"<", "≥", "max", "%"}),
+		WithMaxContains[beerproto.PercentUnit]([]string{"<", "max"}),
+		WithUnit(beerproto.PercentUnit_PERCENT_UNIT_PERCENT_SIGN),
+		WithDefault[beerproto.PercentUnit](Max),
 	)
 
 	parse(value, rangeType, options...)

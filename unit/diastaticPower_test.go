@@ -13,43 +13,43 @@ func TestDiastaticPower(t *testing.T) {
 	tests := []struct {
 		name    string
 		value   string
-		options []OptionsFunc[beerproto.DiastaticPowerUnitType]
+		options []OptionsFunc[beerproto.DiastaticPowerUnit]
 
 		wantDiastaticPower *beerproto.DiastaticPowerRangeType
 	}{
 		{
 			value: "200 Wk",
-			options: []OptionsFunc[beerproto.DiastaticPowerUnitType]{
-				WithFormatter[beerproto.DiastaticPowerUnitType](lxstrconv.NewDecimalFormat(language.German)),
+			options: []OptionsFunc[beerproto.DiastaticPowerUnit]{
+				WithFormatter[beerproto.DiastaticPowerUnit](lxstrconv.NewDecimalFormat(language.German)),
 			},
 			wantDiastaticPower: &beerproto.DiastaticPowerRangeType{
 				Minimum: &beerproto.DiastaticPowerType{
 					Value: 200,
-					Unit:  beerproto.DiastaticPowerUnitType_WK,
+					Unit:  beerproto.DiastaticPowerUnit_DIASTATIC_POWER_UNIT_WK,
 				},
 			},
 		},
 		{
 			value: "> 250 WK ",
-			options: []OptionsFunc[beerproto.DiastaticPowerUnitType]{
-				WithFormatter[beerproto.DiastaticPowerUnitType](lxstrconv.NewDecimalFormat(language.German)),
+			options: []OptionsFunc[beerproto.DiastaticPowerUnit]{
+				WithFormatter[beerproto.DiastaticPowerUnit](lxstrconv.NewDecimalFormat(language.German)),
 			},
 			wantDiastaticPower: &beerproto.DiastaticPowerRangeType{
 				Minimum: &beerproto.DiastaticPowerType{
 					Value: 250,
-					Unit:  beerproto.DiastaticPowerUnitType_WK,
+					Unit:  beerproto.DiastaticPowerUnit_DIASTATIC_POWER_UNIT_WK,
 				},
 			},
 		},
 		{
 			value: "245 wk min",
-			options: []OptionsFunc[beerproto.DiastaticPowerUnitType]{
-				WithFormatter[beerproto.DiastaticPowerUnitType](lxstrconv.NewDecimalFormat(language.German)),
+			options: []OptionsFunc[beerproto.DiastaticPowerUnit]{
+				WithFormatter[beerproto.DiastaticPowerUnit](lxstrconv.NewDecimalFormat(language.German)),
 			},
 			wantDiastaticPower: &beerproto.DiastaticPowerRangeType{
 				Minimum: &beerproto.DiastaticPowerType{
 					Value: 245,
-					Unit:  beerproto.DiastaticPowerUnitType_WK,
+					Unit:  beerproto.DiastaticPowerUnit_DIASTATIC_POWER_UNIT_WK,
 				},
 			},
 		},

@@ -325,7 +325,7 @@ type Malting struct {
 
 func NewMalting(producer string, country string, formatter lxstrconv.NumberFormat, options ...MaltingOptionsFunc) *Malting {
 	options = append(options,
-		WithGrainGroup(beerproto.GrainGroup_BASE),
+		WithGrainGroup(beerproto.GrainGroup_GRAIN_GROUP_BASE),
 		WithStandard(fermentables.GrainType_EBC),
 		WithTitleSelector("h1"),
 	)
@@ -448,7 +448,7 @@ func (s *Malting) grainParse(e *colly.HTMLElement) (bool, *fermentables.GrainTyp
 		if s.options.moisture != nil {
 			if header == *s.options.moisture {
 				grain.Moisture = unit.Percent(text,
-					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+					unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 
 			}
 		}
@@ -456,7 +456,7 @@ func (s *Malting) grainParse(e *colly.HTMLElement) (bool, *fermentables.GrainTyp
 		if s.options.yield != nil {
 			if header == *s.options.yield {
 				grain.Yield = unit.Percent(text,
-					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+					unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 
 			}
 		}
@@ -464,94 +464,94 @@ func (s *Malting) grainParse(e *colly.HTMLElement) (bool, *fermentables.GrainTyp
 		for _, h := range s.options.color {
 			if h == header {
 				grain.Color = unit.Color(text,
-					unit.WithFormatter[beerproto.ColorUnitType](s.formatter),
-					unit.WithColorFromStandard[beerproto.ColorUnitType](*s.options.standard),
+					unit.WithFormatter[beerproto.ColorUnit](s.formatter),
+					unit.WithColorFromStandard[beerproto.ColorUnit](*s.options.standard),
 				)
 			}
 		}
 
 		if s.options.protein != nil {
 			if header == *s.options.protein {
-				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			}
 		}
 
 		if s.options.solubleProtein != nil {
 			if header == *s.options.solubleProtein {
-				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.SolubleProtein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			}
 		}
 
 		if s.options.maximum != nil {
 			if header == *s.options.maximum {
-				grain.Maximum = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter)).Maximum
+				grain.Maximum = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter)).Maximum
 			}
 		}
 
 		if s.options.friability != nil {
 			if header == *s.options.friability {
-				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Friability = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			}
 		}
 
 		if s.options.betaGlucan != nil {
 			if header == *s.options.betaGlucan {
-				grain.BetaGlucan = unit.Concentration(text, unit.WithUnit(beerproto.ConcentrationUnitType_MGL),
-					unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
+				grain.BetaGlucan = unit.Concentration(text, unit.WithUnit(beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MGL),
+					unit.WithFormatter[beerproto.ConcentrationUnit](s.formatter))
 			}
 		}
 
 		if s.options.alphaAmylase != nil {
 			if header == *s.options.alphaAmylase {
-				grain.AlphaAmylase = unit.Time(text, unit.WithFormatter[beerproto.TimeType_TimeUnitType](s.formatter)).Maximum
+				grain.AlphaAmylase = unit.Time(text, unit.WithFormatter[beerproto.TimeUnit](s.formatter)).Maximum
 			}
 		}
 
 		if s.options.diPh != nil {
 			if header == *s.options.diPh {
-				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnitType](s.formatter)).Maximum
+				grain.DiPh = unit.Acidity(text, unit.WithFormatter[beerproto.AcidityUnit](s.formatter)).Maximum
 			}
 		}
 
 		if s.options.fan != nil {
 			if header == *s.options.fan {
-				grain.Fan = unit.Concentration(text, unit.WithFormatter[beerproto.ConcentrationUnitType](s.formatter))
+				grain.Fan = unit.Concentration(text, unit.WithFormatter[beerproto.ConcentrationUnit](s.formatter))
 			}
 		}
 
 		if s.options.totalNitrogen != nil {
 			if header == *s.options.totalNitrogen {
-				grain.TotalNitrogen = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.TotalNitrogen = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			}
 		}
 
 		if s.options.diastaticPower != nil {
 			if header == *s.options.diastaticPower {
-				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnitType](s.formatter))
+				grain.DiastaticPower = unit.DiastaticPower(text, unit.WithFormatter[beerproto.DiastaticPowerUnit](s.formatter))
 			}
 		}
 
 		if s.options.kolbachIndex != nil {
 			if header == *s.options.kolbachIndex {
-				grain.KolbachIndex = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.KolbachIndex = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			}
 		}
 
 		if s.options.saccharification != nil {
 			if header == *s.options.saccharification {
-				grain.Saccharification = unit.Time(text, unit.WithFormatter[beerproto.TimeType_TimeUnitType](s.formatter))
+				grain.Saccharification = unit.Time(text, unit.WithFormatter[beerproto.TimeUnit](s.formatter))
 			}
 		}
 
 		if s.options.fineGrind != nil {
 			if header == *s.options.fineGrind {
-				grain.FineGrind = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.FineGrind = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			}
 		}
 
 		if s.options.coarseGrind != nil {
 			if header == *s.options.coarseGrind {
-				grain.CoarseGrind = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.CoarseGrind = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			}
 		}
 	})

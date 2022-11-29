@@ -13,36 +13,36 @@ func TestConcentration(t *testing.T) {
 	tests := []struct {
 		name                   string
 		value                  string
-		options                []OptionsFunc[beerproto.ConcentrationUnitType]
+		options                []OptionsFunc[beerproto.ConcentrationUnit]
 		wantConcentrationRange *beerproto.ConcentrationRangeType
 	}{
 		{
 			value: "< 250 mg/l",
-			options: []OptionsFunc[beerproto.ConcentrationUnitType]{
-				WithFormatter[beerproto.ConcentrationUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
-				WithUnit(beerproto.ConcentrationUnitType_MGL),
+			options: []OptionsFunc[beerproto.ConcentrationUnit]{
+				WithFormatter[beerproto.ConcentrationUnit](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MGL),
 			},
 			wantConcentrationRange: &beerproto.ConcentrationRangeType{
 				Maximum: &beerproto.ConcentrationType{
 					Value: 250,
-					Unit:  beerproto.ConcentrationUnitType_MGL,
+					Unit:  beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MGL,
 				},
 			},
 		},
 		{
 			value: "630 -730",
-			options: []OptionsFunc[beerproto.ConcentrationUnitType]{
-				WithFormatter[beerproto.ConcentrationUnitType](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
-				WithUnit(beerproto.ConcentrationUnitType_MGL),
+			options: []OptionsFunc[beerproto.ConcentrationUnit]{
+				WithFormatter[beerproto.ConcentrationUnit](lxstrconv.NewDecimalFormat(language.BritishEnglish)),
+				WithUnit(beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MGL),
 			},
 			wantConcentrationRange: &beerproto.ConcentrationRangeType{
 				Minimum: &beerproto.ConcentrationType{
 					Value: 630,
-					Unit:  beerproto.ConcentrationUnitType_MGL,
+					Unit:  beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MGL,
 				},
 				Maximum: &beerproto.ConcentrationType{
 					Value: 730,
-					Unit:  beerproto.ConcentrationUnitType_MGL,
+					Unit:  beerproto.ConcentrationUnit_CONCENTRATION_UNIT_MGL,
 				},
 			},
 		},

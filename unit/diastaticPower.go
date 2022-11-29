@@ -4,15 +4,15 @@ import (
 	beerproto "github.com/beerproto/beerproto_go"
 )
 
-func DiastaticPower(value string, options ...OptionsFunc[beerproto.DiastaticPowerUnitType]) *beerproto.DiastaticPowerRangeType {
-	rangeType := &RangeType[beerproto.DiastaticPowerUnitType, float64]{}
+func DiastaticPower(value string, options ...OptionsFunc[beerproto.DiastaticPowerUnit]) *beerproto.DiastaticPowerRangeType {
+	rangeType := &RangeType[beerproto.DiastaticPowerUnit, float64]{}
 
 	options = append(options,
-		WithMinContains[beerproto.DiastaticPowerUnitType]([]string{">", "wk", "min"}),
-		WithMinTrim[beerproto.DiastaticPowerUnitType]([]string{">", "wk", "min"}),
-		WithMaxTrim[beerproto.DiastaticPowerUnitType]([]string{"<", "max"}),
-		WithMaxContains[beerproto.DiastaticPowerUnitType]([]string{"<", "wk", "max"}),
-		WithUnit(beerproto.DiastaticPowerUnitType_WK),
+		WithMinContains[beerproto.DiastaticPowerUnit]([]string{">", "wk", "min"}),
+		WithMinTrim[beerproto.DiastaticPowerUnit]([]string{">", "wk", "min"}),
+		WithMaxTrim[beerproto.DiastaticPowerUnit]([]string{"<", "max"}),
+		WithMaxContains[beerproto.DiastaticPowerUnit]([]string{"<", "wk", "max"}),
+		WithUnit(beerproto.DiastaticPowerUnit_DIASTATIC_POWER_UNIT_WK),
 	)
 
 	parse(value, rangeType, options...)

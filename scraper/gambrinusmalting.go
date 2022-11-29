@@ -33,7 +33,7 @@ func (s *GambrinusMalting) Parse() []*fermentables.GrainType {
 		grain := &fermentables.GrainType{
 			Country:    "USA",
 			Standard:   fermentables.GrainType_ASBC,
-			GrainGroup: beerproto.GrainGroup_BASE,
+			GrainGroup: beerproto.GrainGroup_GRAIN_GROUP_BASE,
 			Producer:   "Gambrinus Malting",
 			Name:       e.ChildText("h1"),
 		}
@@ -46,19 +46,19 @@ func (s *GambrinusMalting) Parse() []*fermentables.GrainType {
 			switch header {
 			case "Moisture % Max":
 				grain.Moisture = unit.Percent(text,
-					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+					unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Extract FG Min":
 				grain.Yield = unit.Percent(text,
-					unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+					unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Color SRM":
 				grain.Color = unit.Color(text,
-					unit.WithFormatter[beerproto.ColorUnitType](s.formatter),
-					unit.WithUnit(beerproto.ColorUnitType_SRM))
+					unit.WithFormatter[beerproto.ColorUnit](s.formatter),
+					unit.WithUnit(beerproto.ColorUnit_COLOR_UNIT_SRM))
 			case "Protein Total":
-				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter))
+				grain.Protein = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter))
 			case "Usage Rate":
 				text = strings.TrimLeft(text, "Up to")
-				grain.Maximum = unit.Percent(text, unit.WithFormatter[beerproto.PercentType_PercentUnitType](s.formatter)).Maximum
+				grain.Maximum = unit.Percent(text, unit.WithFormatter[beerproto.PercentUnit](s.formatter)).Maximum
 
 			}
 		})
