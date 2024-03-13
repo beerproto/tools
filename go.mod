@@ -6,7 +6,7 @@ require (
 	github.com/beerproto/beerproto_go v1.123.0
 	github.com/gocolly/colly/v2 v2.1.0
 	golang.org/x/text v0.13.0
-	google.golang.org/protobuf v1.28.1
+	google.golang.org/protobuf v1.33.0
 	tawesoft.co.uk/go v0.13.0
 )
 
